@@ -1,0 +1,20 @@
+Aqui vamos apuntando las cosas que faltan o tenemos en mente hacer: 
+
+    - Checkear nivel de código para evitar errores
+    - Elegir datasets de manera correcta para nuestro problema y solución
+    - Plotear las gráficas dejando correr el modelo completo con las configuraciones totales
+    - Ver resultados y ajustar parámetros/métricas/ lo que sea si vemos que los resultados no son correctos, si son correctos ver si van con la hipótesis incial
+    - Report final ver que hay que hacer 
+
+
+
+    ** IDEA INICIAL **
+
+    Querría investigar la relación entre nodos de alguna/algunas arquitecturas de GNNs con métodos de explicabilidad. De manera más específica, centrarme en si llega algún tipo de información de los nodos más lejanos y simultáneamente, añadir aristas de largo alcance y de nuevo con técnicas de explicabilidad ver si esto enriquece a las GNNs y de que manera.  
+    Este proyecto apunta a:
+    Explicar la arquitectura y las decisiones de modelos GNNs con técnicas de explicabilidad
+    Intentar disipar problemas de over-squashing con aristas artificiales de largo alcance
+    Explicar de nuevo la clasificación de los modelos que cuentan con estas aristas artificiales
+    Se utilizarán métodos de explicabilidad como GNNExplainer o Parametrized graph explainer para analizar las predicciones a nivel de nodo e identificar qué partes del grafo contribuyen más a cada resultado. Esto permitirá detectar si se está perdiendo información relevante debido a la limitación del campo receptivo. En segundo lugar, se modificará la estructura del grafo introduciendo conexiones de largo alcance  con el objetivo de facilitar la propagación de información global.
+    La eficacia de estas modificaciones se evaluará tanto a nivel de accuracy como a través del análisis de interpretabilidad, comparando modelos GNN estándar con sus versiones modificadas.
+    Quizás queda raro decirlo, pero esta propuesta de trabajo viene tiene en cuenta el hecho de que no se penaliza obtener resultados negativos. No quiero decir que no confíe demasiado en los resultados, pero entiendo que puede ser algo complicado que cumpla las expectativas iniciales de claridad y mejora, pero será igualmente un aprendizaje. Me parece que es una lección correcta en el mundo científico no solo presentar los hallazgos de progreso sino los de limitaciones también. De todas maneras en caso de fallo o complicación podría dirigirme más hacia un  benchmark entre tipos de explicabilidad entre modelos y sus diferentes aristas de largo alcance. 
