@@ -17,4 +17,20 @@ Aqui vamos apuntando las cosas que faltan o tenemos en mente hacer:
     Explicar de nuevo la clasificación de los modelos que cuentan con estas aristas artificiales
     Se utilizarán métodos de explicabilidad como GNNExplainer o Parametrized graph explainer para analizar las predicciones a nivel de nodo e identificar qué partes del grafo contribuyen más a cada resultado. Esto permitirá detectar si se está perdiendo información relevante debido a la limitación del campo receptivo. En segundo lugar, se modificará la estructura del grafo introduciendo conexiones de largo alcance  con el objetivo de facilitar la propagación de información global.
     La eficacia de estas modificaciones se evaluará tanto a nivel de accuracy como a través del análisis de interpretabilidad, comparando modelos GNN estándar con sus versiones modificadas.
-    Quizás queda raro decirlo, pero esta propuesta de trabajo viene tiene en cuenta el hecho de que no se penaliza obtener resultados negativos. No quiero decir que no confíe demasiado en los resultados, pero entiendo que puede ser algo complicado que cumpla las expectativas iniciales de claridad y mejora, pero será igualmente un aprendizaje. Me parece que es una lección correcta en el mundo científico no solo presentar los hallazgos de progreso sino los de limitaciones también. De todas maneras en caso de fallo o complicación podría dirigirme más hacia un  benchmark entre tipos de explicabilidad entre modelos y sus diferentes aristas de largo alcance. 
+    Quizás queda raro decirlo, pero esta propuesta de trabajo viene tiene en cuenta el hecho de que no se penaliza obtener resultados negativos. No quiero decir que no confíe demasiado en los resultados, pero entiendo que puede ser algo complicado que cumpla las expectativas iniciales de claridad y mejora, pero será igualmente un aprendizaje. Me parece que es una lección correcta en el mundo científico no solo presentar los hallazgos de progreso sino los de limitaciones también. De todas maneras en caso de fallo o complicación podría dirigirme más hacia un  benchmark entre tipos de explicabilidad entre modelos y sus diferentes aristas de largo alcance.
+    
+
+    🛠️ Ajuste de Hiperparámetros y Ejecución
+
+El modelo GAT actual tiene solo 3 capas (num_layers=3) y el anillo tiene 20 nodos. Con 3 capas, la información solo viaja 3 saltos, pero el objetivo está a 10 saltos.  
++1
+
+Tu tarea: Necesitas ajustar el número de capas o demostrar que las aristas de largo alcance (como el Virtual Node) permiten que la información llegue en menos saltos.
+
+📊 Análisis de los Resultados (El "Report")
+
+El script visualize.py genera un informe de 4 paneles y hacer el heatmap del attention. Tienes que:  
+
+Correr el experimento completo para all (Ring y Cora).  
+
+Interpretar la "Advertencia de Sesgo": Hay un aviso en el código: si FeatureSim mejora el accuracy pero la Norma Jacobiana es baja, es que el modelo está "haciendo trampas" por parecido de nodos, no porque la información fluya mejor.
