@@ -65,20 +65,22 @@ def make_ring_transfer(num_nodes: int = 20, num_classes: int = 5,
 # ---------------------------------------------------------------------------
 
 class NormalizeMNIST(T.BaseTransform):
-    """
-    Normaliza las features de MNIST Superpíxeles:
-      - Canal de intensidad (col 0): ya está en [0,1]
-      - Coordenadas x,y (cols 1,2): normalizar a [0,1] dividiendo por 27
-    Añade también la etiqueta como long para compatibilidad con cross_entropy.
-    """
-    def __call__(self, data: Data) -> Data:
-        if data.x is not None and data.x.shape[1] >= 3:
-            data.x = data.x.float()
-            data.x[:, 1] = data.x[:, 1] / 27.0
-            data.x[:, 2] = data.x[:, 2] / 27.0
-        data.y = data.y.long().squeeze()
-        return data
+    def forward(self, data: Data) -> Data:
+        data.x = data.x.float()
 
+        # MNISTSuperpixels suele guardar coordenadas en data.pos
+        if hasattr(data, "pos") and data.pos is not None:
+            pos = data.pos.float()
+
+            # Normaliza si viene en escala 0-27
+            if pos.max() > 1.0:
+                pos = pos / 27.0
+
+            # x = [intensity, pos_x, pos_y]
+            data.x = torch.cat([data.x, pos], dim=1)
+
+        data.y = data.y.long().view(-1)
+        return data
 
 def load_mnist_superpixels(
     root: str = "./data",

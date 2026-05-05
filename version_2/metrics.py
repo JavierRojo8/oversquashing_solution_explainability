@@ -29,7 +29,7 @@ def compute_jacobian_norm(model, data: Data,
         logits = model(x, data.edge_index)
         logits[i].sum().backward()
         for j in source_nodes:
-            results[(i, j)] = data.x.grad[j].norm().item() if x.grad is not None else 0.0
+            results[(i, j)] = x.grad[j].norm().item() if x.grad is not None else 0.0
         if x.grad is not None:
             x.grad.zero_()
     return results

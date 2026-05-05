@@ -41,10 +41,22 @@ GAT_KWARGS   = dict(hidden=32, heads=4, num_layers=3, dropout=0.5)
 TRAIN_RING   = dict(epochs=200, lr=0.005, weight_decay=5e-4)
 
 MNIST_CONFIG = dict(subset_train=10000, subset_test=2000)
-GAT_MNIST    = dict(hidden=64, heads=4, num_layers=3, dropout=0.5)
-TRAIN_MNIST  = dict(epochs=30, lr=0.001, weight_decay=5e-4, batch_size=64)
 
-KHOP_K = 3
+GAT_MNIST = dict(
+    hidden=64,
+    heads=4,
+    num_layers=3,
+    dropout=0.2,
+)
+
+TRAIN_MNIST = dict(
+    epochs=50,
+    lr=0.005,
+    weight_decay=1e-4,
+    batch_size=64,
+)
+
+KHOP_K = 5
 
 
 # ---------------------------------------------------------------------------

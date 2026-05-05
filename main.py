@@ -34,7 +34,7 @@ RING_CONFIG = dict(num_nodes=20, num_classes=5, num_graphs=500)
 GAT_KWARGS  = dict(hidden=32, heads=4, num_layers=3, dropout=0.5)
 TRAIN_RING  = dict(epochs=200, lr=0.005, weight_decay=5e-4)
 TRAIN_CORA  = dict(epochs=300, lr=0.005, weight_decay=5e-4)
-KHOP_K      = 3   # k for K-hop and budget for Random/FeatureSim
+KHOP_K      = 5   # k for K-hop and budget for Random/FeatureSim
 
 
 def run_ring(verbose: bool = True) -> dict:

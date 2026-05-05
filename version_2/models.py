@@ -94,7 +94,7 @@ class GATGraphLevel(nn.Module):
     """
 
     def __init__(self, in_channels: int, hidden: int, out_channels: int,
-                 heads: int = 4, num_layers: int = 3, dropout: float = 0.5):
+                 heads: int = 4, num_layers: int = 3, dropout: float = 0.2):
         super().__init__()
         assert num_layers >= 2
         self.dropout = dropout
@@ -126,14 +126,16 @@ class GATGraphLevel(nn.Module):
         self,
         x: torch.Tensor,
         edge_index: torch.Tensor,
-        batch: torch.Tensor,
+        batch: torch.Tensor = None,
         return_attention_weights: bool = False,
     ) -> Union[torch.Tensor, tuple]:
+        if batch is None:
+            batch = torch.zeros(x.size(0), dtype=torch.long, device=x.device)
         attention_list = []
 
         for i, conv in enumerate(self.convs):
-            if self.training:
-                x = F.dropout(x, p=self.dropout, training=True)
+            if i > 0:
+                x = F.dropout(x, p=self.dropout, training=self.training)
 
             if return_attention_weights:
                 result   = conv(x, edge_index, return_attention_weights=True)

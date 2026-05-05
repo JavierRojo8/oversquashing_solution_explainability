@@ -20,14 +20,15 @@ from torch_geometric.loader import DataLoader
 # ---------------------------------------------------------------------------
 
 def get_device() -> torch.device:
-    """
-    Prioridad: MPS (Apple Silicon) → CUDA → CPU.
-    MPS requiere macOS 12.3+ y PyTorch >= 1.12.
-    """
+    """Prioridad: CUDA → MPS (Apple Silicon) → CPU."""
+    if torch.cuda.is_available():
+        dev = torch.device('cuda')
+        print(f"  [device] GPU detectada: {torch.cuda.get_device_name(0)}")
+        return dev
     if torch.backends.mps.is_available():
         return torch.device('mps')
-    if torch.cuda.is_available():
-        return torch.device('cuda')
+    print("  [device] CUDA no disponible — usando CPU. "
+          "Instala PyTorch con soporte CUDA: https://pytorch.org/get-started/locally/")
     return torch.device('cpu')
 
 
@@ -182,7 +183,10 @@ def train_graph_level(
 
     g0          = train_dataset[0]
     in_channels = g0.x.shape[1]
-    num_classes = int(max(d.y.item() for d in train_dataset)) + 1
+    all_labels = [int(d.y.item()) for d in train_dataset]
+    all_labels += [int(d.y.item()) for d in val_dataset]
+    all_labels += [int(d.y.item()) for d in test_dataset]
+    num_classes = max(all_labels) + 1
 
     model     = model_cls(in_channels=in_channels, out_channels=num_classes,
                           **model_kwargs).to(device)
@@ -209,7 +213,8 @@ def train_graph_level(
             batch = batch.to(device)
             optimizer.zero_grad()
             logits = model(batch.x, batch.edge_index, batch.batch)
-            loss   = F.cross_entropy(logits, batch.y)
+            y = batch.y.view(-1).long()
+            loss   = F.cross_entropy(logits, y)
             loss.backward()
             # Gradient clipping — útil con MPS
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
@@ -227,6 +232,11 @@ def train_graph_level(
             best_val  = val_acc
             best_test = test_acc
 
+        if epoch == 1:
+            print(batch.x.shape)
+            print(batch.y.shape, batch.y[:10])
+            print(logits.shape)
+
         if verbose:
             avg_loss = total_loss / max(total_graphs, 1)
             print(f"  Epoch {epoch:02d}/{epochs} | Loss {avg_loss:.4f} | "
@@ -243,6 +253,7 @@ def _acc_graph_level(model, loader, device) -> float:
         batch    = batch.to(device)
         logits   = model(batch.x, batch.edge_index, batch.batch)
         pred     = logits.argmax(dim=-1)
-        correct += (pred == batch.y).sum().item()
+        y = batch.y.view(-1).long()
+        correct += (pred == y).sum().item()
         total   += batch.num_graphs
     return correct / total if total > 0 else 0.0
