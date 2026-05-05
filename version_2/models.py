@@ -85,6 +85,19 @@ class GAT(nn.Module):
                 x = F.elu(x)
         return x, attention_list
 
+    @torch.no_grad()
+    def get_embeddings(self, x, edge_index):
+        """
+        Devuelve los embeddings de la PENÚLTIMA capa (antes de la GATConv final
+        que produce los logits). Es donde over-smoothing es más visible:
+        si los embeddings ya colapsan aquí, la capa final no puede recuperar info.
+        """
+        self.eval()
+        for i, conv in enumerate(self.convs[:-1]):  # todas menos la última
+            x = conv(x, edge_index)
+            x = F.elu(x)
+        return x
+
 
 # ---------------------------------------------------------------------------
 # GATGraphLevel — clasificación de grafos (MNIST Superpíxeles)
@@ -179,6 +192,22 @@ class GATGraphLevel(nn.Module):
         if return_attention_weights:
             return logits, attention_list
         return logits
+
+    @torch.no_grad()
+    def get_embeddings(self, x, edge_index, batch=None):
+        """
+        Embeddings de nodos justo ANTES del global pooling.
+        Útil para medir over-smoothing en arquitectura graph-level.
+        """
+        self.eval()
+        if batch is None:
+            batch = torch.zeros(x.size(0), dtype=torch.long, device=x.device)
+        for i, (conv, bn) in enumerate(zip(self.convs, self.bns)):
+            x = conv(x, edge_index)
+            x = bn(x)
+            if i < len(self.convs) - 1:
+                x = F.elu(x)
+        return x  # (N, hidden) — embeddings antes de pooling
 
 
 # ---------------------------------------------------------------------------

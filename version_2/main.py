@@ -1,341 +1,297 @@
 """
-Main experiment: LRE-GAT over-squashing analysis.
+LRE-GAT: Squashing↔Smoothing Trade-off Experiment
 
-Datasets:
-  ring   → RingTransfer (sintético, over-squashing garantizado)
-  mnist  → MNIST Superpíxeles (visión real, ~75 nodos/grafo)
-  all    → Ambos
+Para cada (dataset, estrategia, budget):
+  1. Aplica rewiring al grafo con el budget dado.
+  2. Entrena un GAT desde cero.
+  3. Mide test accuracy + Jacobian (squashing) + MAD/Dirichlet (smoothing).
+  4. (Solo RingTransfer) calcula Fidelity+/Sparsity con GNNExplainer.
+
+Resultados → results/trade_off.csv + plots por dataset.
 
 Uso:
-  python main.py --dataset ring          # Solo RingTransfer (~10 min CPU)
-  python main.py --dataset mnist         # Solo MNIST (~40 min CPU, ~15 min MPS)
-  python main.py --dataset all           # Ambos
-  python main.py --dataset ring --quiet  # Sin logs de epoch
+  python main.py                       # todos los datasets
+  python main.py --datasets ring cora  # subset
+  python main.py --quick               # 2 budgets, menos epochs (sanity check)
 """
 
 import argparse
-import json
 import os
-import random
+import json
 import torch
 import numpy as np
+import pandas as pd
 
-from datasets import make_ring_transfer, load_mnist_superpixels
-from rewiring import STRATEGIES, random_rewiring, khop_rewiring, feature_similarity_rewiring
+from datasets import make_ring_transfer, load_mnist_superpixels, load_cora
+from rewiring import STRATEGIES, apply_strategy
 from models import GAT, GATGraphLevel
-from train import train_graph_list, train_graph_level, get_device
+from train import (train_single_graph, train_graph_list, train_graph_level,
+                    get_device)
 from metrics import (
     jacobian_norm_by_distance,
-    graph_level_jacobian_norm_by_distance,
-    distance_bucket_counts,
-    compute_fidelity,
-    permutation_test,
-    explanation_sparsity,
+    mean_average_distance, dirichlet_energy,
+    compute_fidelity, explanation_sparsity, permutation_test,
 )
-from visualize import (
-    plot_report,
-    plot_attention_heatmap,
-    plot_attention_comparison,
-    summarize_attention_on_artificial,
-)
+from visualize import (plot_tradeoff_curves, plot_pareto_frontier,
+                        plot_cross_dataset_summary, plot_attention_heatmap)
 
 
 # ---------------------------------------------------------------------------
-# Config
+# Configuración global
 # ---------------------------------------------------------------------------
-RING_CONFIG  = dict(num_nodes=20, num_classes=5, num_graphs=500)
-GAT_KWARGS   = dict(hidden=32, heads=4, num_layers=3, dropout=0.5)
-TRAIN_RING   = dict(epochs=200, lr=0.005, weight_decay=5e-4)
 
-MNIST_CONFIG = dict(subset_train=10000, subset_test=2000)
+BUDGETS = [0.0, 0.25, 0.75, 1.5]  # 4 budgets (0%, 25%, 75%, 150%)
 
-GAT_MNIST = dict(
-    hidden=64,
-    heads=4,
-    num_layers=4,       # 3 → 4: más expresividad para 10 clases
-    dropout=0.3,        # solo en MLP final, no en GATConv interno
-)
+RING_CONFIG = dict(num_nodes=20, num_classes=5, num_graphs=500)
+GAT_RING    = dict(hidden=32, heads=4, num_layers=3, dropout=0.5)
+TRAIN_RING  = dict(epochs=200, lr=0.005, weight_decay=5e-4)
 
-TRAIN_MNIST = dict(
-    epochs=50,
-    lr=1e-3,            # 5e-3 → 1e-3: 5e-3 oscilaba demasiado con 10 clases
-    weight_decay=5e-5,  # 1e-4 → 5e-5: regularización más suave
-    batch_size=128,     # 64 → 128: mejor estimación del gradiente
-)
+GAT_CORA    = dict(hidden=16, heads=8, num_layers=2, dropout=0.6)
+TRAIN_CORA  = dict(epochs=200, lr=0.005, weight_decay=5e-4)
 
-# K-hop budget: en RingTransfer queremos k grande (10 hops a recortar);
-# en MNIST con ~75 nodos, k=3 ya añade muchas aristas — k=5 satura el grafo.
-KHOP_K_RING  = 3
-KHOP_K_MNIST = 3
+MNIST_CONFIG = dict(subset_train=4000, subset_test=1000)  # subset reducido para tiempo
+GAT_MNIST    = dict(hidden=64, heads=4, num_layers=4, dropout=0.3)
+TRAIN_MNIST  = dict(epochs=25, lr=1e-3, weight_decay=5e-5, batch_size=128)
 
 
 # ---------------------------------------------------------------------------
-# Reproducibility
+# Ejecutores por dataset
 # ---------------------------------------------------------------------------
 
-SEED = 42
-
-def set_seed(seed: int = SEED):
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
-
-
-# ---------------------------------------------------------------------------
-# Persistence
-# ---------------------------------------------------------------------------
-
-def save_results(results: dict, models: dict, prefix: str):
-    """Save metrics to JSON and model weights to .pt files under results/."""
-    os.makedirs("results", exist_ok=True)
-
-    # Metrics: drop non-serialisable keys (jacobian_by_dist has int keys)
-    serialisable = {}
-    for strategy, r in results.items():
-        serialisable[strategy] = {
-            k: ({str(dk): dv for dk, dv in v.items()} if isinstance(v, dict) else v)
-            for k, v in r.items()
-        }
-    metrics_path = f"results/{prefix}_metrics.json"
-    with open(metrics_path, "w") as f:
-        json.dump(serialisable, f, indent=2)
-    print(f"[save] Metrics → {metrics_path}")
-
-    for strategy, model in models.items():
-        safe_name = strategy.lower().replace(" ", "_")
-        model_path = f"results/{prefix}_model_{safe_name}.pt"
-        torch.save(model.state_dict(), model_path)
-        print(f"[save] Model {strategy} → {model_path}")
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-def _apply_strategy(name: str, raw_graphs: list, k: int) -> list:
-    if name == "FeatureSim":
-        return [feature_similarity_rewiring(g, k=k, train_mask=g.train_mask)
-                for g in raw_graphs]
-    if name == "Random":
-        return [random_rewiring(g, k=k, seed=i) for i, g in enumerate(raw_graphs)]
-    if name == "K-hop":
-        return [khop_rewiring(g, k=k) for g in raw_graphs]
-    return raw_graphs
-
-
-def _apply_strategy_single(name: str, data, k: int) -> object:
-    """Aplica rewiring a un único grafo (MNIST)."""
-    if name == "FeatureSim":
-        return feature_similarity_rewiring(data, k=k)
-    if name == "Random":
-        return random_rewiring(data, k=k, seed=0)
-    if name == "K-hop":
-        return khop_rewiring(data, k=k)
-    return data
-
-
-def _apply_strategy_dataset(name: str, dataset, k: int) -> list:
-    """Aplica rewiring a cada grafo de un dataset PyG."""
-    print(f"    Aplicando rewiring {name} (k={k}) a {len(dataset)} grafos...", flush=True)
+def run_ring_one(strategy: str, budget: float, verbose: bool = False) -> dict:
+    """RingTransfer: lista de grafos pequeños, predicción de nodo target."""
+    raw_graphs = make_ring_transfer(**RING_CONFIG)
     rewired = []
-    for i, g in enumerate(dataset):
-        rewired.append(_apply_strategy_single(name, g, k))
-        if (i + 1) % 1000 == 0:
-            print(f"    {i+1}/{len(dataset)}", flush=True)
-    return rewired
+    for i, g in enumerate(raw_graphs):
+        rewired.append(apply_strategy(strategy, g, budget_frac=budget,
+                                       seed=i, train_mask=g.train_mask))
+
+    res = train_graph_list(GAT, rewired, model_kwargs=GAT_RING,
+                            verbose=verbose, **TRAIN_RING)
+    model = res['model'].cpu().eval()
+
+    # Métricas en un grafo de test
+    test_graphs = [g for g in rewired if g.test_mask.any()]
+    sample = (test_graphs[0] if test_graphs else rewired[0]).cpu()
+
+    # Jacobian
+    jbd = jacobian_norm_by_distance(model, sample)
+    jac_mean = float(np.mean(list(jbd.values()))) if jbd else 0.0
+
+    # Embeddings → MAD + Dirichlet
+    emb = model.get_embeddings(sample.x, sample.edge_index)
+    mad_v   = mean_average_distance(emb)
+    diri_v  = dirichlet_energy(emb, sample.edge_index)
+
+    # Explicabilidad (solo en RingTransfer)
+    target = sample.num_nodes // 2
+    try:
+        fid = compute_fidelity(model, sample, [target])
+        fid_plus = fid.get(target, {}).get('fidelity_plus', 0.0)
+        spars = explanation_sparsity(model, sample, [target])
+    except Exception as e:
+        print(f"  [warn] fidelity/sparsity failed: {e}")
+        fid_plus, spars = 0.0, 0.0
+
+    return dict(test_acc=res['test_acc'], mad=mad_v, dirichlet=diri_v,
+                jacobian_mean=jac_mean, jacobian_by_dist=jbd,
+                fidelity_plus=fid_plus, sparsity=spars,
+                num_nodes=sample.num_nodes,
+                num_edges=int(sample.edge_index.shape[1] // 2))
 
 
-# ---------------------------------------------------------------------------
-# RingTransfer experiment
-# ---------------------------------------------------------------------------
+def run_cora_one(strategy: str, budget: float, verbose: bool = False) -> dict:
+    """Cora: un único grafo grande, clasificación de nodos."""
+    data = load_cora()
+    rewired = apply_strategy(strategy, data, budget_frac=budget,
+                              seed=0, train_mask=data.train_mask)
 
-def run_ring(verbose: bool = True) -> tuple[dict, dict]:
-    print("\n=== RingTransfer Experiment ===")
-    device      = get_device()
-    raw_graphs  = make_ring_transfer(**RING_CONFIG)
-    baseline_ei = raw_graphs[0].edge_index.clone()
+    # Crea modelo
+    in_ch = rewired.x.shape[1]
+    out_ch = int(rewired.y.max().item()) + 1
+    model_inst = GAT(in_channels=in_ch, out_channels=out_ch, **GAT_CORA)
 
-    results      = {}
-    strategy_viz = {}
+    res = train_single_graph(model_inst, rewired, verbose=verbose, **TRAIN_CORA)
+    model = res['model'].cpu().eval()
+    rewired_cpu = rewired.cpu()
 
-    for name in STRATEGIES:
-        print(f"\n--- Strategy: {name} ---")
-        rewired = _apply_strategy(name, raw_graphs, k=KHOP_K_RING)
+    # Jacobian (Cora tiene 2708 nodos → recortamos a una submuestra de 200)
+    sub = _subsample_data_for_metrics(rewired_cpu, max_nodes=200, seed=0)
+    jbd = jacobian_norm_by_distance(model, sub) if sub is not None else {}
+    jac_mean = float(np.mean(list(jbd.values()))) if jbd else 0.0
 
-        train_result = train_graph_list(
-            GAT, rewired, model_kwargs=GAT_KWARGS,
-            verbose=verbose, **TRAIN_RING,
-        )
-        test_acc = train_result['test_acc']
-        model    = train_result['model']
-        model.eval()
-        print(f"  Test Accuracy: {test_acc:.4f}")
+    # MAD/Dirichlet sobre TODOS los nodos
+    emb = model.get_embeddings(rewired_cpu.x, rewired_cpu.edge_index)
+    mad_v  = mean_average_distance(emb)
+    diri_v = dirichlet_energy(emb, rewired_cpu.edge_index)
 
-        test_graphs = [g for g in rewired if g.test_mask.any()]
-        sample      = (test_graphs[0] if test_graphs else rewired[0]).cpu()
-        model_cpu   = model.cpu()
+    # Fidelity en algunos nodos de test (caro → solo 5)
+    test_idx = rewired_cpu.test_mask.nonzero(as_tuple=True)[0]
+    samples = test_idx[torch.randperm(len(test_idx))[:5]].tolist()
+    try:
+        fid = compute_fidelity(model, rewired_cpu, samples)
+        fid_plus = float(np.mean([v.get('fidelity_plus', 0.0)
+                                  for v in fid.values()]))
+        spars = explanation_sparsity(model, rewired_cpu, samples)
+    except Exception as e:
+        print(f"  [warn] fidelity/sparsity failed: {e}")
+        fid_plus, spars = 0.0, 0.0
 
-        target_node = RING_CONFIG['num_nodes'] // 2
-        source_node = 0
-
-        print("  Computing Jacobian norms...")
-        jac_by_dist = jacobian_norm_by_distance(model_cpu, sample,
-                                                 num_nodes=sample.num_nodes)
-        jac_mean = float(np.mean(list(jac_by_dist.values()))) if jac_by_dist else 0.0
-
-        print("  Computing Fidelity...")
-        fid_results = compute_fidelity(model_cpu, sample, [target_node])
-        fid_plus    = fid_results.get(target_node, {}).get('fidelity_plus', 0.0)
-
-        print("  Computing Sparsity...")
-        sparsity = explanation_sparsity(model_cpu, sample, [target_node])
-
-        perm = permutation_test(model_cpu, sample, [target_node], [source_node])
-        print(f"  Perm test acc drop: {perm['mean_acc_drop']:.4f} ± {perm['std_acc_drop']:.4f}")
-
-        if (name == "FeatureSim"
-                and test_acc > results.get("Baseline", {}).get("test_acc", 0)
-                and jac_mean < 0.01):
-            print("  ⚠ ADVERTENCIA: Mejora posiblemente por sesgo, no por flujo.")
-
-        print("  Generating attention heatmap...")
-        plot_attention_heatmap(
-            model=model_cpu, data=sample, strategy_name=name,
-            layer_idx=-1, aggr="mean",
-            save_path=f"results/ring_attention_{name.lower()}.png",
-            highlight_artificial=(name != "Baseline"),
-            original_edge_index=baseline_ei,
-        )
-
-        if name != "Baseline":
-            summarize_attention_on_artificial(
-                model_cpu, sample, baseline_ei, strategy_name=name)
-
-        strategy_viz[name] = {
-            'model': model_cpu, 'data': sample,
-            'original_edge_index': baseline_ei if name != "Baseline" else None,
-        }
-        results[name] = {
-            'test_acc': test_acc, 'jacobian_by_dist': jac_by_dist,
-            'jacobian_mean': jac_mean, 'fidelity_plus': fid_plus,
-            'sparsity': sparsity, 'perm_acc_drop': perm['mean_acc_drop'],
-        }
-
-    print("\n  Generating attention comparison figure...")
-    plot_attention_comparison(strategy_results=strategy_viz,
-                              save_path="results/ring_attention_comparison.png")
-    models = {name: v['model'] for name, v in strategy_viz.items()}
-    return results, models
+    return dict(test_acc=res['test_acc'], mad=mad_v, dirichlet=diri_v,
+                jacobian_mean=jac_mean, jacobian_by_dist=jbd,
+                fidelity_plus=fid_plus, sparsity=spars,
+                num_nodes=rewired_cpu.num_nodes,
+                num_edges=int(rewired_cpu.edge_index.shape[1] // 2))
 
 
-# ---------------------------------------------------------------------------
-# MNIST Superpíxeles experiment
-# ---------------------------------------------------------------------------
-
-def run_mnist(verbose: bool = True) -> tuple[dict, dict]:
-    print("\n=== MNIST Superpíxeles Experiment ===")
-    device = get_device()
-    print(f"  Device: {device}")
-
-    print("  Cargando dataset...")
+def run_mnist_one(strategy: str, budget: float, verbose: bool = False) -> dict:
+    """MNIST Superpíxeles: dataset de grafos, clasificación a nivel de grafo."""
     train_full, val_full, test_full = load_mnist_superpixels(**MNIST_CONFIG)
-    baseline_ei = train_full[0].edge_index.clone()
 
-    results      = {}
-    strategy_viz = {}
+    if strategy == "Baseline" or budget == 0.0:
+        train_ds, val_ds, test_ds = train_full, val_full, test_full
+    else:
+        print(f"    Aplicando rewiring {strategy} budget={budget}...", flush=True)
+        train_ds = [apply_strategy(strategy, g, budget_frac=budget, seed=i)
+                    for i, g in enumerate(train_full)]
+        val_ds   = [apply_strategy(strategy, g, budget_frac=budget, seed=i)
+                    for i, g in enumerate(val_full)]
+        test_ds  = [apply_strategy(strategy, g, budget_frac=budget, seed=i)
+                    for i, g in enumerate(test_full)]
 
-    for name in STRATEGIES:
-        print(f"\n--- Strategy: {name} ---")
+    res = train_graph_level(GATGraphLevel,
+                              train_dataset=train_ds, val_dataset=val_ds,
+                              test_dataset=test_ds, model_kwargs=GAT_MNIST,
+                              verbose=verbose, **TRAIN_MNIST)
+    model = res['model'].cpu().eval()
 
-        if name == "Baseline":
-            train_ds, val_ds, test_ds = train_full, val_full, test_full
-        else:
-            train_ds = _apply_strategy_dataset(name, train_full, k=KHOP_K_MNIST)
-            val_ds   = _apply_strategy_dataset(name, val_full,   k=KHOP_K_MNIST)
-            test_ds  = _apply_strategy_dataset(name, test_full,  k=KHOP_K_MNIST)
+    sample = test_ds[0].cpu() if not isinstance(test_ds, list) else test_ds[0].cpu()
+    if hasattr(sample, 'cpu'):
+        sample = sample.cpu()
 
-        train_result = train_graph_level(
-            GATGraphLevel,
-            train_dataset=train_ds,
-            val_dataset=val_ds,
-            test_dataset=test_ds,
-            model_kwargs=GAT_MNIST,
-            verbose=verbose,
-            **TRAIN_MNIST,
-        )
-        test_acc = train_result['test_acc']
-        model    = train_result['model']
-        model.eval()
-        print(f"  Test Accuracy: {test_acc:.4f}")
+    # MAD/Dirichlet sobre embeddings de un grafo
+    emb = model.get_embeddings(sample.x, sample.edge_index)
+    mad_v  = mean_average_distance(emb)
+    diri_v = dirichlet_energy(emb, sample.edge_index)
 
-        # Métricas de explicabilidad sobre un grafo de test representativo
-        # (movemos a CPU para GNNExplainer que no soporta MPS)
-        sample    = test_ds[0].cpu()
-        model_cpu = model.cpu()
+    # Jacobian a nivel de grafo: una pasada
+    try:
+        jbd = jacobian_norm_by_distance(model, sample, graph_level=True)
+        jac_mean = float(np.mean(list(jbd.values()))) if jbd else 0.0
+    except Exception as e:
+        print(f"  [warn] jacobian failed: {e}")
+        jbd, jac_mean = {}, 0.0
 
-        print("  Computing graph-level Jacobian norms...")
-        jac_by_dist = graph_level_jacobian_norm_by_distance(
-            model_cpu,
-            sample,
-            max_reference_nodes=10,
-        )
+    # En MNIST no calculamos Fidelity (multi-grafo, demasiado caro)
+    return dict(test_acc=res['test_acc'], mad=mad_v, dirichlet=diri_v,
+                jacobian_mean=jac_mean, jacobian_by_dist=jbd,
+                fidelity_plus=0.0, sparsity=0.0,
+                num_nodes=sample.num_nodes,
+                num_edges=int(sample.edge_index.shape[1] // 2))
 
-        dist_counts = distance_bucket_counts(
-            sample,
-            max_reference_nodes=10,
-        )
 
-        jac_mean = float(np.mean(list(jac_by_dist.values()))) if jac_by_dist else 0.0
+# ---------------------------------------------------------------------------
+# Helper: submuestreo de Cora para Jacobian
+# ---------------------------------------------------------------------------
 
-        print(f"  Jacobian mean: {jac_mean:.6f}")
-        print(f"  Distance counts: {dist_counts}")
+def _subsample_data_for_metrics(data, max_nodes: int = 200, seed: int = 0):
+    """
+    Para grafos grandes (Cora): toma una submuestra inducida de ~max_nodes nodos.
+    Devuelve un Data más pequeño donde podemos calcular distancias y Jacobian.
+    """
+    if data.num_nodes <= max_nodes:
+        return data
+    g = torch.Generator().manual_seed(seed)
+    idx = torch.randperm(data.num_nodes, generator=g)[:max_nodes]
+    idx_set = set(idx.tolist())
+    # Reindex
+    remap = {old: new for new, old in enumerate(idx.tolist())}
+    src = data.edge_index[0].tolist()
+    dst = data.edge_index[1].tolist()
+    new_src, new_dst = [], []
+    for s, d in zip(src, dst):
+        if s in idx_set and d in idx_set:
+            new_src.append(remap[s])
+            new_dst.append(remap[d])
+    if len(new_src) == 0:
+        return None
+    from torch_geometric.data import Data as PyGData
+    return PyGData(
+        x=data.x[idx],
+        edge_index=torch.tensor([new_src, new_dst], dtype=torch.long),
+        y=data.y[idx],
+    )
 
-        print("  Computing Fidelity...")
-        fid_results = compute_fidelity(model_cpu, sample, [target_node],
-                                       graph_level=True)
-        fid_plus = fid_results.get(target_node, {}).get('fidelity_plus', 0.0)
 
-        print("  Computing Sparsity...")
-        sparsity = explanation_sparsity(model_cpu, sample, [target_node],
-                                        graph_level=True)
+# ---------------------------------------------------------------------------
+# Orquestación
+# ---------------------------------------------------------------------------
 
-        print("  Generating attention heatmap...")
-        plot_attention_heatmap(
-            model=model_cpu, data=sample,
-            strategy_name=f"MNIST-{name}",
-            layer_idx=-1, aggr="mean",
-            save_path=f"results/mnist_attention_{name.lower()}.png",
-            highlight_artificial=(name != "Baseline"),
-            original_edge_index=baseline_ei,
-        )
+DATASET_RUNNERS = {
+    "ring":  run_ring_one,
+    "cora":  run_cora_one,
+    "mnist": run_mnist_one,
+}
 
-        if name != "Baseline":
-            summarize_attention_on_artificial(
-                model_cpu, sample, baseline_ei, strategy_name=f"MNIST-{name}")
 
-        strategy_viz[name] = {
-            'model': model_cpu, 'data': sample,
-            'original_edge_index': baseline_ei if name != "Baseline" else None,
-        }
-        results[name] = {
-            'test_acc': test_acc,
-            'jacobian_by_dist': jac_by_dist,
-            'jacobian_mean': jac_mean,
-            'distance_counts': dist_counts,
-            'fidelity_plus': fid_plus,
-            'sparsity': sparsity,
-            'perm_acc_drop': 0.0,
-        }
+def run_sweep(datasets: list, budgets: list, verbose: bool) -> pd.DataFrame:
+    rows = []
+    total = sum(len(STRATEGIES) * len(budgets) for _ in datasets)
+    print(f"\n=== Sweep: {len(datasets)} datasets × {len(STRATEGIES)} strategies × "
+          f"{len(budgets)} budgets = {total} runs ===\n")
 
-    print("\n  Generating MNIST attention comparison figure...")
-    plot_attention_comparison(strategy_results=strategy_viz,
-                              save_path="results/mnist_attention_comparison.png")
-    models = {name: v['model'] for name, v in strategy_viz.items()}
-    return results, models
+    run_idx = 0
+    for ds in datasets:
+        if ds not in DATASET_RUNNERS:
+            print(f"[skip] unknown dataset: {ds}")
+            continue
+        runner = DATASET_RUNNERS[ds]
+
+        for strategy in STRATEGIES:
+            for budget in budgets:
+                # Baseline solo se evalúa en budget=0 (idéntico a otros budgets para Baseline)
+                if strategy == "Baseline" and budget != 0.0:
+                    continue
+
+                run_idx += 1
+                tag = f"[{run_idx}] {ds} | {strategy} | b={budget}"
+                print(f"\n{tag}", flush=True)
+                try:
+                    out = runner(strategy=strategy, budget=budget, verbose=verbose)
+                    out.update(dict(dataset=ds, strategy=strategy, budget=budget))
+                    rows.append(out)
+                    print(f"  → acc={out['test_acc']:.3f} | "
+                          f"MAD={out['mad']:.3f} | jac={out['jacobian_mean']:.4f} | "
+                          f"E={out['num_edges']}", flush=True)
+                except Exception as e:
+                    print(f"  ✗ FAILED: {e}", flush=True)
+                    import traceback; traceback.print_exc()
+                    rows.append(dict(dataset=ds, strategy=strategy, budget=budget,
+                                      test_acc=0.0, mad=0.0, dirichlet=0.0,
+                                      jacobian_mean=0.0, jacobian_by_dist={},
+                                      fidelity_plus=0.0, sparsity=0.0,
+                                      num_nodes=0, num_edges=0,
+                                      error=str(e)))
+    return pd.DataFrame(rows)
+
+
+# ---------------------------------------------------------------------------
+# Replicar Baseline para todos los budgets (para que las plots tengan línea recta)
+# ---------------------------------------------------------------------------
+
+def expand_baseline(df: pd.DataFrame, budgets: list) -> pd.DataFrame:
+    extra = []
+    for ds in df['dataset'].unique():
+        base_row = df[(df['dataset'] == ds) & (df['strategy'] == "Baseline")]
+        if base_row.empty:
+            continue
+        base = base_row.iloc[0].to_dict()
+        for b in budgets:
+            if b == 0.0:
+                continue
+            new = dict(base); new['budget'] = b
+            extra.append(new)
+    return pd.concat([df, pd.DataFrame(extra)], ignore_index=True)
 
 
 # ---------------------------------------------------------------------------
@@ -343,47 +299,58 @@ def run_mnist(verbose: bool = True) -> tuple[dict, dict]:
 # ---------------------------------------------------------------------------
 
 def main():
-    parser = argparse.ArgumentParser(description="LRE-GAT Over-Squashing Experiment")
-    parser.add_argument('--dataset', choices=['ring', 'mnist', 'all'], default='ring')
+    parser = argparse.ArgumentParser(description="LRE-GAT trade-off study")
+    parser.add_argument('--datasets', nargs='+',
+                         default=['ring', 'cora', 'mnist'],
+                         choices=['ring', 'cora', 'mnist'])
+    parser.add_argument('--quick', action='store_true',
+                         help="Sanity check: 2 budgets, less epochs")
     parser.add_argument('--quiet', action='store_true')
-    args    = parser.parse_args()
-    verbose = not args.quiet
+    args = parser.parse_args()
 
-    set_seed(SEED)
-    print(f"[seed] Reproducibilidad fijada: {SEED}")
+    os.makedirs("results", exist_ok=True)
+    print(f"[device] {get_device()}")
 
-    device = get_device()
-    print(f"[device] Usando: {device}")
+    budgets = [0.0, 0.5] if args.quick else BUDGETS
+    if args.quick:
+        TRAIN_RING['epochs']  = 60
+        TRAIN_CORA['epochs']  = 80
+        TRAIN_MNIST['epochs'] = 8
 
-    if args.dataset in ('ring', 'all'):
-        ring_results, ring_models = run_ring(verbose=verbose)
-        plot_report(ring_results, save_path="results/ring_report.png")
-        save_results(ring_results, ring_models, prefix="ring")
-        _print_summary("Ring", ring_results, include_jac=True)
+    # ---- Sweep ---- #
+    df = run_sweep(args.datasets, budgets, verbose=not args.quiet)
+    df = expand_baseline(df, budgets)
 
-    if args.dataset in ('mnist', 'all'):
-        mnist_results, mnist_models = run_mnist(verbose=verbose)
-        plot_report(mnist_results, save_path="results/mnist_report.png")
-        save_results(mnist_results, mnist_models, prefix="mnist")
-        _print_summary("MNIST", mnist_results, include_jac=False)
+    # ---- Persistencia ---- #
+    csv_path = "results/trade_off.csv"
+    df_to_save = df.drop(columns=['jacobian_by_dist'], errors='ignore')
+    df_to_save.to_csv(csv_path, index=False)
+    print(f"\n[save] CSV → {csv_path}")
 
+    json_path = "results/trade_off_full.json"
+    df_records = df.copy()
+    df_records['jacobian_by_dist'] = df_records['jacobian_by_dist'].apply(
+        lambda d: {int(k): float(v) for k, v in d.items()} if isinstance(d, dict) else {})
+    with open(json_path, 'w') as f:
+        json.dump(df_records.to_dict(orient='records'), f, indent=2, default=str)
+    print(f"[save] JSON → {json_path}")
 
-def _print_summary(name: str, results: dict, include_jac: bool):
-    print(f"\n[{name}] Summary:")
-    if include_jac:
-        print(f"  {'Strategy':12s} | {'Acc':>6s} | {'JacMean':>8s} | "
-              f"{'Fid+':>6s} | {'Spars':>6s} | {'PermDrop':>8s}")
-        print("  " + "-" * 65)
-        for s, r in results.items():
-            print(f"  {s:12s} | {r['test_acc']:>6.3f} | {r['jacobian_mean']:>8.4f} | "
-                  f"{r['fidelity_plus']:>6.3f} | {r['sparsity']:>6.3f} | "
-                  f"{r['perm_acc_drop']:>8.4f}")
-    else:
-        print(f"  {'Strategy':12s} | {'Acc':>6s} | {'Fid+':>6s} | {'Spars':>6s}")
-        print("  " + "-" * 42)
-        for s, r in results.items():
-            print(f"  {s:12s} | {r['test_acc']:>6.3f} | "
-                  f"{r['fidelity_plus']:>6.3f} | {r['sparsity']:>6.3f}")
+    # ---- Plots ---- #
+    for ds in args.datasets:
+        plot_tradeoff_curves(df, dataset_name=ds,
+                              save_path=f"results/tradeoff_{ds}.png")
+        plot_pareto_frontier(df, dataset_name=ds,
+                              save_path=f"results/pareto_{ds}.png")
+    plot_cross_dataset_summary(df, save_path="results/summary.png")
+
+    # ---- Resumen consola ---- #
+    print("\n" + "=" * 70)
+    print("FINAL SUMMARY  (best accuracy per dataset × strategy)")
+    print("=" * 70)
+    best = (df.groupby(['dataset', 'strategy'])
+              .agg({'test_acc': 'max'}).reset_index())
+    pivot = best.pivot(index='dataset', columns='strategy', values='test_acc')
+    print(pivot.to_string(float_format=lambda v: f"{v:.3f}"))
 
 
 if __name__ == '__main__':
