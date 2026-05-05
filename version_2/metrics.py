@@ -59,54 +59,110 @@ def jacobian_norm_by_distance(model, data: Data, num_nodes: int = None) -> dict:
 
     return {d: float(np.mean(v)) for d, v in sorted(by_dist.items())}
 
-def graph_level_jacobian_norm_by_distance(model, data: Data,
-                                          reference_node: int = None) -> dict:
+def graph_level_jacobian_norm_by_distance(
+    model,
+    data: Data,
+    reference_nodes: list[int] = None,
+    max_reference_nodes: int = 10,
+) -> dict:
     """
-    Jacobian norm para clasificación a nivel de grafo.
+    Jacobian norm fiable para clasificación a nivel de grafo.
 
-    Mide cuánto afecta cada nodo al logit predicho del grafo completo.
-    Luego agrupa esas sensibilidades por distancia respecto a un nodo
-    de referencia, normalmente el nodo central del grafo.
+    Mide sensibilidad del logit predicho del grafo respecto a las features
+    de cada nodo, y agrupa esa sensibilidad por distancia hop.
+
+    En vez de usar un único nodo de referencia arbitrario, promedia sobre
+    varios nodos de referencia para obtener una métrica más estable.
     """
     from rewiring import _pairwise_distances
 
     model.eval()
 
     num_nodes = data.num_nodes
-    reference_node = reference_node if reference_node is not None else num_nodes // 2
+    device = data.x.device
 
-    batch = torch.zeros(num_nodes, dtype=torch.long, device=data.x.device)
+    dist_matrix = _pairwise_distances(data.edge_index.cpu(), num_nodes)
+
+    if reference_nodes is None:
+        if data.x.size(1) >= 1:
+            intensity = data.x[:, 0].detach().cpu()
+            reference_nodes = torch.topk(
+                intensity,
+                k=min(max_reference_nodes, num_nodes)
+            ).indices.tolist()
+        else:
+            reference_nodes = list(range(min(max_reference_nodes, num_nodes)))
 
     x_in = data.x.clone().detach().requires_grad_(True)
+    batch = torch.zeros(num_nodes, dtype=torch.long, device=device)
 
     logits = model(x_in, data.edge_index, batch)
     pred_class = logits.argmax(dim=-1).item()
 
-    logits[0, pred_class].backward()
+    score = logits[0, pred_class]
+    score.backward()
 
-    grad = x_in.grad
-    if grad is None:
+    if x_in.grad is None:
         return {}
 
-    node_grad_norms = grad.norm(dim=1).detach().cpu().numpy()
-
-    dist_matrix = _pairwise_distances(data.edge_index.cpu(), num_nodes)
+    node_grad_norms = x_in.grad.norm(dim=1).detach().cpu().numpy()
 
     by_dist = {}
-    for j in range(num_nodes):
-        if j == reference_node:
-            continue
 
-        d = dist_matrix[reference_node, j]
-        if np.isinf(d):
-            continue
+    for ref in reference_nodes:
+        for j in range(num_nodes):
+            if j == ref:
+                continue
 
-        by_dist.setdefault(int(d), []).append(node_grad_norms[j])
+            d = dist_matrix[ref, j]
+            if np.isinf(d):
+                continue
+
+            by_dist.setdefault(int(d), []).append(float(node_grad_norms[j]))
 
     return {
         d: float(np.mean(vals))
         for d, vals in sorted(by_dist.items())
+        if len(vals) > 0
     }
+
+
+def distance_bucket_counts(data: Data, reference_nodes: list[int] = None,
+                           max_reference_nodes: int = 10) -> dict:
+    """
+    Cuenta cuántos pares nodo-referencia hay por distancia.
+    Sirve para saber si una distancia tiene pocos ejemplos y evitar
+    interpretar ceros falsos.
+    """
+    from rewiring import _pairwise_distances
+
+    num_nodes = data.num_nodes
+    dist_matrix = _pairwise_distances(data.edge_index.cpu(), num_nodes)
+
+    if reference_nodes is None:
+        if data.x.size(1) >= 1:
+            intensity = data.x[:, 0].detach().cpu()
+            reference_nodes = torch.topk(
+                intensity,
+                k=min(max_reference_nodes, num_nodes)
+            ).indices.tolist()
+        else:
+            reference_nodes = list(range(min(max_reference_nodes, num_nodes)))
+
+    counts = {}
+
+    for ref in reference_nodes:
+        for j in range(num_nodes):
+            if j == ref:
+                continue
+
+            d = dist_matrix[ref, j]
+            if np.isinf(d):
+                continue
+
+            counts[int(d)] = counts.get(int(d), 0) + 1
+
+    return counts
 
 
 # ---------------------------------------------------------------------------

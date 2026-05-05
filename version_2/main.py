@@ -25,9 +25,12 @@ from rewiring import STRATEGIES, random_rewiring, khop_rewiring, feature_similar
 from models import GAT, GATGraphLevel
 from train import train_graph_list, train_graph_level, get_device
 from metrics import (
-    jacobian_norm_by_distance, compute_fidelity,
-    permutation_test, explanation_sparsity,
+    jacobian_norm_by_distance,
     graph_level_jacobian_norm_by_distance,
+    distance_bucket_counts,
+    compute_fidelity,
+    permutation_test,
+    explanation_sparsity,
 )
 from visualize import (
     plot_report,
@@ -274,16 +277,22 @@ def run_mnist(verbose: bool = True) -> tuple[dict, dict]:
         sample    = test_ds[0].cpu()
         model_cpu = model.cpu()
 
-        # Para MNIST usamos el nodo central como "target" aproximado
-        target_node = sample.num_nodes // 2
-        
         print("  Computing graph-level Jacobian norms...")
         jac_by_dist = graph_level_jacobian_norm_by_distance(
             model_cpu,
             sample,
-            reference_node=target_node,
+            max_reference_nodes=10,
         )
+
+        dist_counts = distance_bucket_counts(
+            sample,
+            max_reference_nodes=10,
+        )
+
         jac_mean = float(np.mean(list(jac_by_dist.values()))) if jac_by_dist else 0.0
+
+        print(f"  Jacobian mean: {jac_mean:.6f}")
+        print(f"  Distance counts: {dist_counts}")
 
         print("  Computing Fidelity...")
         fid_results = compute_fidelity(model_cpu, sample, [target_node],
@@ -313,9 +322,13 @@ def run_mnist(verbose: bool = True) -> tuple[dict, dict]:
             'original_edge_index': baseline_ei if name != "Baseline" else None,
         }
         results[name] = {
-            'test_acc': test_acc, 'jacobian_by_dist': jac_by_dist,
-            'jacobian_mean': jac_mean, 'fidelity_plus': fid_plus,
-            'sparsity': sparsity, 'perm_acc_drop': 0.0,
+            'test_acc': test_acc,
+            'jacobian_by_dist': jac_by_dist,
+            'jacobian_mean': jac_mean,
+            'distance_counts': dist_counts,
+            'fidelity_plus': fid_plus,
+            'sparsity': sparsity,
+            'perm_acc_drop': 0.0,
         }
 
     print("\n  Generating MNIST attention comparison figure...")

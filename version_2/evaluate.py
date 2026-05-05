@@ -24,6 +24,7 @@ from models import GAT, GATGraphLevel #type: ignore
 from metrics import (
     jacobian_norm_by_distance,
     graph_level_jacobian_norm_by_distance,
+    distance_bucket_counts,
     compute_jacobian_norm,
     compute_fidelity,
     permutation_test,
@@ -227,19 +228,25 @@ def evaluate_mnist():
                            in_channels, num_classes)
 
         # Use one representative test graph (rewired the same way)
-        sample_raw = test_ds[0]
-        sample     = apply_rewiring_single(name, sample_raw, k=KHOP_K_MNIST).cpu()
-
-        target_node = sample.num_nodes // 2 #type: ignore
+        sample_raw  = test_ds[0]
+        sample      = apply_rewiring_single(name, sample_raw, k=KHOP_K_MNIST).cpu()
+        target_node = sample.num_nodes // 2  # used by fidelity & sparsity
 
         print("  Computing graph-level Jacobian norms...")
         jac_by_dist = graph_level_jacobian_norm_by_distance(
             model,
             sample,
-            reference_node=target_node,
+            max_reference_nodes=10,
         )
+
+        dist_counts = distance_bucket_counts(
+            sample,
+            max_reference_nodes=10,
+        )
+
         jac_mean = float(np.mean(list(jac_by_dist.values()))) if jac_by_dist else 0.0
         print(f"  Jacobian mean: {jac_mean:.6f}")
+        print(f"  Distance counts: {dist_counts}")
 
         test_acc = saved_metrics.get(name, {}).get('test_acc', float('nan'))
         if not np.isnan(test_acc):
@@ -260,6 +267,7 @@ def evaluate_mnist():
             'test_acc':         test_acc,
             'jacobian_by_dist': jac_by_dist,
             'jacobian_mean':    jac_mean,
+            'distance_counts':  dist_counts,
             'fidelity_plus':    fid_plus,
             'sparsity':         sparsity,
             'perm_acc_drop':    0.0,
