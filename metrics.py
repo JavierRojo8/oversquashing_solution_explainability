@@ -47,7 +47,7 @@ def jacobian_norm_by_distance(model, data: Data, num_nodes: int = None) -> dict:
     Compute average Jacobian norm grouped by hop distance.
     Returns {distance: mean_norm}.
     """
-    from rewiring import _pairwise_distances
+    from oversquashing_solution_explainability.version_2.rewiring import _pairwise_distances
     if num_nodes is None:
         num_nodes = data.num_nodes
 

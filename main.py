@@ -16,15 +16,15 @@ import torch
 import numpy as np
 from copy import deepcopy
 
-from datasets import make_ring_transfer, load_cora
-from rewiring import STRATEGIES, feature_similarity_rewiring
-from models import GAT
-from train import train_graph_list, train_single_graph
+from oversquashing_solution_explainability.version_2.datasets import make_ring_transfer, load_cora
+from oversquashing_solution_explainability.version_2.rewiring import STRATEGIES, feature_similarity_rewiring
+from oversquashing_solution_explainability.version_2.models import GAT
+from oversquashing_solution_explainability.version_2.train import train_graph_list, train_single_graph
 from metrics import (
     jacobian_norm_by_distance, compute_fidelity,
     permutation_test, explanation_sparsity,
 )
-from visualize import plot_report
+from oversquashing_solution_explainability.version_2.visualize import plot_report
 
 
 # -----------------------------------------------------------------------
@@ -53,13 +53,13 @@ def run_ring(verbose: bool = True) -> dict:
             rewired = [feature_similarity_rewiring(g, k=KHOP_K, train_mask=g.train_mask)
                        for g in raw_graphs]
         elif name == "Random":
-            from rewiring import random_rewiring
+            from oversquashing_solution_explainability.version_2.rewiring import random_rewiring
             rewired = [random_rewiring(g, k=KHOP_K, seed=i) for i, g in enumerate(raw_graphs)]
         elif name == "K-hop":
-            from rewiring import khop_rewiring
+            from oversquashing_solution_explainability.version_2.rewiring import khop_rewiring
             rewired = [khop_rewiring(g, k=KHOP_K) for g in raw_graphs]
         elif name == "VirtualNode":
-            from rewiring import virtual_node_rewiring
+            from oversquashing_solution_explainability.version_2.rewiring import virtual_node_rewiring
             rewired = [virtual_node_rewiring(g) for g in raw_graphs]
             # Virtual node expands num_nodes — update in_channels stays same
         else:
@@ -137,13 +137,13 @@ def run_cora(verbose: bool = True) -> dict:
             data = feature_similarity_rewiring(raw_data, k=KHOP_K,
                                                 train_mask=raw_data.train_mask)
         elif name == "Random":
-            from rewiring import random_rewiring
+            from oversquashing_solution_explainability.version_2.rewiring import random_rewiring
             data = random_rewiring(raw_data, k=KHOP_K)
         elif name == "K-hop":
-            from rewiring import khop_rewiring
+            from oversquashing_solution_explainability.version_2.rewiring import khop_rewiring
             data = khop_rewiring(raw_data, k=KHOP_K)
         elif name == "VirtualNode":
-            from rewiring import virtual_node_rewiring
+            from oversquashing_solution_explainability.version_2.rewiring import virtual_node_rewiring
             data = virtual_node_rewiring(raw_data)
         else:
             data = raw_data
