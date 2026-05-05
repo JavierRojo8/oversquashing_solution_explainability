@@ -66,13 +66,17 @@ def plot_report(results: dict, save_path: str = "results/report.png"):
         jbd = results[s].get('jacobian_by_dist', {})
         heat_data.append([jbd.get(d, 0.0) for d in all_dists])
     heat_arr = np.array(heat_data)
-    if heat_arr.max() > 0:
-        heat_arr = heat_arr / heat_arr.max()
-
-    sns.heatmap(heat_arr, ax=ax, xticklabels=all_dists, yticklabels=strategies,
-                cmap='YlOrRd', annot=True, fmt=".2f", cbar_kws={'label': 'Norm. Jacobian'})
-    ax.set_xlabel("Hop Distance")
-    ax.set_title("2. Jacobian Norm vs Hop Distance")
+    if heat_arr.size == 0:
+        ax.text(0.5, 0.5, "Jacobian no disponible\npara este dataset",
+                ha='center', va='center', transform=ax.transAxes, fontsize=11)
+        ax.set_title("2. Jacobian Norm vs Hop Distance")
+    else:
+        if heat_arr.max() > 0:
+            heat_arr = heat_arr / heat_arr.max()
+        sns.heatmap(heat_arr, ax=ax, xticklabels=all_dists, yticklabels=strategies,
+                    cmap='YlOrRd', annot=True, fmt=".2f", cbar_kws={'label': 'Norm. Jacobian'})
+        ax.set_xlabel("Hop Distance")
+        ax.set_title("2. Jacobian Norm vs Hop Distance")
 
     # --- 3. Jacobian Mean vs Fidelity+ Scatter --------------------------- #
     ax = axes[1, 0]

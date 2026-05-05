@@ -14,6 +14,9 @@ Uso:
 """
 
 import argparse
+import json
+import os
+import random
 import torch
 import numpy as np
 
@@ -24,6 +27,7 @@ from train import train_graph_list, train_graph_level, get_device
 from metrics import (
     jacobian_norm_by_distance, compute_fidelity,
     permutation_test, explanation_sparsity,
+    graph_level_jacobian_norm_by_distance,
 )
 from visualize import (
     plot_report,
@@ -60,6 +64,49 @@ TRAIN_MNIST = dict(
 # en MNIST con ~75 nodos, k=3 ya añade muchas aristas — k=5 satura el grafo.
 KHOP_K_RING  = 3
 KHOP_K_MNIST = 3
+
+
+# ---------------------------------------------------------------------------
+# Reproducibility
+# ---------------------------------------------------------------------------
+
+SEED = 42
+
+def set_seed(seed: int = SEED):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+
+# ---------------------------------------------------------------------------
+# Persistence
+# ---------------------------------------------------------------------------
+
+def save_results(results: dict, models: dict, prefix: str):
+    """Save metrics to JSON and model weights to .pt files under results/."""
+    os.makedirs("results", exist_ok=True)
+
+    # Metrics: drop non-serialisable keys (jacobian_by_dist has int keys)
+    serialisable = {}
+    for strategy, r in results.items():
+        serialisable[strategy] = {
+            k: ({str(dk): dv for dk, dv in v.items()} if isinstance(v, dict) else v)
+            for k, v in r.items()
+        }
+    metrics_path = f"results/{prefix}_metrics.json"
+    with open(metrics_path, "w") as f:
+        json.dump(serialisable, f, indent=2)
+    print(f"[save] Metrics → {metrics_path}")
+
+    for strategy, model in models.items():
+        safe_name = strategy.lower().replace(" ", "_")
+        model_path = f"results/{prefix}_model_{safe_name}.pt"
+        torch.save(model.state_dict(), model_path)
+        print(f"[save] Model {strategy} → {model_path}")
 
 
 # ---------------------------------------------------------------------------
@@ -103,7 +150,7 @@ def _apply_strategy_dataset(name: str, dataset, k: int) -> list:
 # RingTransfer experiment
 # ---------------------------------------------------------------------------
 
-def run_ring(verbose: bool = True) -> dict:
+def run_ring(verbose: bool = True) -> tuple[dict, dict]:
     print("\n=== RingTransfer Experiment ===")
     device      = get_device()
     raw_graphs  = make_ring_transfer(**RING_CONFIG)
@@ -178,14 +225,15 @@ def run_ring(verbose: bool = True) -> dict:
     print("\n  Generating attention comparison figure...")
     plot_attention_comparison(strategy_results=strategy_viz,
                               save_path="results/ring_attention_comparison.png")
-    return results
+    models = {name: v['model'] for name, v in strategy_viz.items()}
+    return results, models
 
 
 # ---------------------------------------------------------------------------
 # MNIST Superpíxeles experiment
 # ---------------------------------------------------------------------------
 
-def run_mnist(verbose: bool = True) -> dict:
+def run_mnist(verbose: bool = True) -> tuple[dict, dict]:
     print("\n=== MNIST Superpíxeles Experiment ===")
     device = get_device()
     print(f"  Device: {device}")
@@ -228,6 +276,14 @@ def run_mnist(verbose: bool = True) -> dict:
 
         # Para MNIST usamos el nodo central como "target" aproximado
         target_node = sample.num_nodes // 2
+        
+        print("  Computing graph-level Jacobian norms...")
+        jac_by_dist = graph_level_jacobian_norm_by_distance(
+            model_cpu,
+            sample,
+            reference_node=target_node,
+        )
+        jac_mean = float(np.mean(list(jac_by_dist.values()))) if jac_by_dist else 0.0
 
         print("  Computing Fidelity...")
         fid_results = compute_fidelity(model_cpu, sample, [target_node],
@@ -257,15 +313,16 @@ def run_mnist(verbose: bool = True) -> dict:
             'original_edge_index': baseline_ei if name != "Baseline" else None,
         }
         results[name] = {
-            'test_acc': test_acc, 'jacobian_by_dist': {},
-            'jacobian_mean': 0.0, 'fidelity_plus': fid_plus,
+            'test_acc': test_acc, 'jacobian_by_dist': jac_by_dist,
+            'jacobian_mean': jac_mean, 'fidelity_plus': fid_plus,
             'sparsity': sparsity, 'perm_acc_drop': 0.0,
         }
 
     print("\n  Generating MNIST attention comparison figure...")
     plot_attention_comparison(strategy_results=strategy_viz,
                               save_path="results/mnist_attention_comparison.png")
-    return results
+    models = {name: v['model'] for name, v in strategy_viz.items()}
+    return results, models
 
 
 # ---------------------------------------------------------------------------
@@ -279,17 +336,22 @@ def main():
     args    = parser.parse_args()
     verbose = not args.quiet
 
+    set_seed(SEED)
+    print(f"[seed] Reproducibilidad fijada: {SEED}")
+
     device = get_device()
-    print(f"\n[device] Usando: {device}")
+    print(f"[device] Usando: {device}")
 
     if args.dataset in ('ring', 'all'):
-        ring_results = run_ring(verbose=verbose)
+        ring_results, ring_models = run_ring(verbose=verbose)
         plot_report(ring_results, save_path="results/ring_report.png")
+        save_results(ring_results, ring_models, prefix="ring")
         _print_summary("Ring", ring_results, include_jac=True)
 
     if args.dataset in ('mnist', 'all'):
-        mnist_results = run_mnist(verbose=verbose)
+        mnist_results, mnist_models = run_mnist(verbose=verbose)
         plot_report(mnist_results, save_path="results/mnist_report.png")
+        save_results(mnist_results, mnist_models, prefix="mnist")
         _print_summary("MNIST", mnist_results, include_jac=False)
 
 

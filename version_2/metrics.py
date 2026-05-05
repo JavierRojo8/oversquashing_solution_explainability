@@ -59,6 +59,55 @@ def jacobian_norm_by_distance(model, data: Data, num_nodes: int = None) -> dict:
 
     return {d: float(np.mean(v)) for d, v in sorted(by_dist.items())}
 
+def graph_level_jacobian_norm_by_distance(model, data: Data,
+                                          reference_node: int = None) -> dict:
+    """
+    Jacobian norm para clasificación a nivel de grafo.
+
+    Mide cuánto afecta cada nodo al logit predicho del grafo completo.
+    Luego agrupa esas sensibilidades por distancia respecto a un nodo
+    de referencia, normalmente el nodo central del grafo.
+    """
+    from rewiring import _pairwise_distances
+
+    model.eval()
+
+    num_nodes = data.num_nodes
+    reference_node = reference_node if reference_node is not None else num_nodes // 2
+
+    batch = torch.zeros(num_nodes, dtype=torch.long, device=data.x.device)
+
+    x_in = data.x.clone().detach().requires_grad_(True)
+
+    logits = model(x_in, data.edge_index, batch)
+    pred_class = logits.argmax(dim=-1).item()
+
+    logits[0, pred_class].backward()
+
+    grad = x_in.grad
+    if grad is None:
+        return {}
+
+    node_grad_norms = grad.norm(dim=1).detach().cpu().numpy()
+
+    dist_matrix = _pairwise_distances(data.edge_index.cpu(), num_nodes)
+
+    by_dist = {}
+    for j in range(num_nodes):
+        if j == reference_node:
+            continue
+
+        d = dist_matrix[reference_node, j]
+        if np.isinf(d):
+            continue
+
+        by_dist.setdefault(int(d), []).append(node_grad_norms[j])
+
+    return {
+        d: float(np.mean(vals))
+        for d, vals in sorted(by_dist.items())
+    }
+
 
 # ---------------------------------------------------------------------------
 # GNNExplainer helpers
