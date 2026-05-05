@@ -65,20 +65,27 @@ def make_ring_transfer(num_nodes: int = 20, num_classes: int = 5,
 # ---------------------------------------------------------------------------
 
 class NormalizeMNIST(T.BaseTransform):
+    """
+    Normaliza features a rangos coherentes:
+      - Intensidad: ya viene en [0, 1] desde MNISTSuperpixels.
+      - Posición:   se centra y reescala a [-1, 1] (no [0, 1]) para que el
+                    centro de la imagen sea 0. Esto evita que el mean pooling
+                    arrastre un sesgo geométrico hacia (0.5, 0.5) y hace que
+                    las coordenadas tengan media cero, mejorando la
+                    convergencia de GAT.
+    """
     def forward(self, data: Data) -> Data:
         data.x = data.x.float()
 
-        # MNISTSuperpixels suele guardar coordenadas en data.pos
         if hasattr(data, "pos") and data.pos is not None:
             pos = data.pos.float()
-
-            # Normaliza si viene en escala 0-27
-            if pos.max() > 1.0:
-                pos = pos / 27.0
-
-            # x = [intensity, pos_x, pos_y]
+            # MNISTSuperpixels usa pos en [0, 27]
+            if pos.max() > 1.5:
+                pos = (pos / 27.0) * 2.0 - 1.0   # → [-1, 1]
+            # x = [intensity, pos_x, pos_y]  shape (N, 3)
             data.x = torch.cat([data.x, pos], dim=1)
 
+        # MNIST: y es escalar por grafo
         data.y = data.y.long().view(-1)
         return data
 

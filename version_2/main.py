@@ -45,52 +45,55 @@ MNIST_CONFIG = dict(subset_train=10000, subset_test=2000)
 GAT_MNIST = dict(
     hidden=64,
     heads=4,
-    num_layers=3,
-    dropout=0.2,
+    num_layers=4,       # 3 → 4: más expresividad para 10 clases
+    dropout=0.3,        # solo en MLP final, no en GATConv interno
 )
 
 TRAIN_MNIST = dict(
     epochs=50,
-    lr=0.005,
-    weight_decay=1e-4,
-    batch_size=64,
+    lr=1e-3,            # 5e-3 → 1e-3: 5e-3 oscilaba demasiado con 10 clases
+    weight_decay=5e-5,  # 1e-4 → 5e-5: regularización más suave
+    batch_size=128,     # 64 → 128: mejor estimación del gradiente
 )
 
-KHOP_K = 5
+# K-hop budget: en RingTransfer queremos k grande (10 hops a recortar);
+# en MNIST con ~75 nodos, k=3 ya añade muchas aristas — k=5 satura el grafo.
+KHOP_K_RING  = 3
+KHOP_K_MNIST = 3
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _apply_strategy(name: str, raw_graphs: list) -> list:
+def _apply_strategy(name: str, raw_graphs: list, k: int) -> list:
     if name == "FeatureSim":
-        return [feature_similarity_rewiring(g, k=KHOP_K, train_mask=g.train_mask)
+        return [feature_similarity_rewiring(g, k=k, train_mask=g.train_mask)
                 for g in raw_graphs]
     if name == "Random":
-        return [random_rewiring(g, k=KHOP_K, seed=i) for i, g in enumerate(raw_graphs)]
+        return [random_rewiring(g, k=k, seed=i) for i, g in enumerate(raw_graphs)]
     if name == "K-hop":
-        return [khop_rewiring(g, k=KHOP_K) for g in raw_graphs]
+        return [khop_rewiring(g, k=k) for g in raw_graphs]
     return raw_graphs
 
 
-def _apply_strategy_single(name: str, data) -> object:
+def _apply_strategy_single(name: str, data, k: int) -> object:
     """Aplica rewiring a un único grafo (MNIST)."""
     if name == "FeatureSim":
-        return feature_similarity_rewiring(data, k=KHOP_K)
+        return feature_similarity_rewiring(data, k=k)
     if name == "Random":
-        return random_rewiring(data, k=KHOP_K, seed=0)
+        return random_rewiring(data, k=k, seed=0)
     if name == "K-hop":
-        return khop_rewiring(data, k=KHOP_K)
+        return khop_rewiring(data, k=k)
     return data
 
 
-def _apply_strategy_dataset(name: str, dataset) -> list:
+def _apply_strategy_dataset(name: str, dataset, k: int) -> list:
     """Aplica rewiring a cada grafo de un dataset PyG."""
-    print(f"    Aplicando rewiring {name} a {len(dataset)} grafos...", flush=True)
+    print(f"    Aplicando rewiring {name} (k={k}) a {len(dataset)} grafos...", flush=True)
     rewired = []
     for i, g in enumerate(dataset):
-        rewired.append(_apply_strategy_single(name, g))
+        rewired.append(_apply_strategy_single(name, g, k))
         if (i + 1) % 1000 == 0:
             print(f"    {i+1}/{len(dataset)}", flush=True)
     return rewired
@@ -111,7 +114,7 @@ def run_ring(verbose: bool = True) -> dict:
 
     for name in STRATEGIES:
         print(f"\n--- Strategy: {name} ---")
-        rewired = _apply_strategy(name, raw_graphs)
+        rewired = _apply_strategy(name, raw_graphs, k=KHOP_K_RING)
 
         train_result = train_graph_list(
             GAT, rewired, model_kwargs=GAT_KWARGS,
@@ -200,9 +203,9 @@ def run_mnist(verbose: bool = True) -> dict:
         if name == "Baseline":
             train_ds, val_ds, test_ds = train_full, val_full, test_full
         else:
-            train_ds = _apply_strategy_dataset(name, train_full)
-            val_ds   = _apply_strategy_dataset(name, val_full)
-            test_ds  = _apply_strategy_dataset(name, test_full)
+            train_ds = _apply_strategy_dataset(name, train_full, k=KHOP_K_MNIST)
+            val_ds   = _apply_strategy_dataset(name, val_full,   k=KHOP_K_MNIST)
+            test_ds  = _apply_strategy_dataset(name, test_full,  k=KHOP_K_MNIST)
 
         train_result = train_graph_level(
             GATGraphLevel,

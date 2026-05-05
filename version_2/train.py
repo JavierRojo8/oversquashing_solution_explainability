@@ -191,7 +191,10 @@ def train_graph_level(
     model     = model_cls(in_channels=in_channels, out_channels=num_classes,
                           **model_kwargs).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)
+    # Cosine annealing — más suave que StepLR para entrenamientos cortos
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer, T_max=epochs, eta_min=lr * 0.01,
+    )
 
     # MPS no soporta num_workers > 0 de forma estable
     num_workers = 0
@@ -231,11 +234,6 @@ def train_graph_level(
         if val_acc > best_val:
             best_val  = val_acc
             best_test = test_acc
-
-        if epoch == 1:
-            print(batch.x.shape)
-            print(batch.y.shape, batch.y[:10])
-            print(logits.shape)
 
         if verbose:
             avg_loss = total_loss / max(total_graphs, 1)
