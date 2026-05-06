@@ -1,0 +1,707 @@
+=== Sweep: 3 datasets × 4 strategies × 4 budgets = 48 runs ===
+
+
+[1] ring | Baseline | b=0.0
+  Epoch 020 | Loss 1.6923 | Val 0.2133 | Test 0.2133
+  Epoch 040 | Loss 1.6846 | Val 0.2000 | Test 0.1333
+  Epoch 060 | Loss 1.6781 | Val 0.1067 | Test 0.2933
+  Epoch 080 | Loss 1.6762 | Val 0.1733 | Test 0.1200
+  Epoch 100 | Loss 1.6884 | Val 0.2133 | Test 0.1867
+  Epoch 120 | Loss 1.6512 | Val 0.2400 | Test 0.1467
+  Epoch 140 | Loss 1.6597 | Val 0.1467 | Test 0.2400
+  Epoch 160 | Loss 1.6583 | Val 0.2000 | Test 0.1333
+  Epoch 180 | Loss 1.6817 | Val 0.2133 | Test 0.1067
+  Epoch 200 | Loss 1.6638 | Val 0.1733 | Test 0.1200
+  → acc=0.147 | MAD=0.188 | jac=0.0362 | E=20
+
+[2] ring | Random | b=0.0
+  Epoch 020 | Loss 1.6923 | Val 0.2133 | Test 0.2133
+  Epoch 040 | Loss 1.6846 | Val 0.2000 | Test 0.1333
+  Epoch 060 | Loss 1.6781 | Val 0.1067 | Test 0.2933
+  Epoch 080 | Loss 1.6762 | Val 0.1733 | Test 0.1200
+  Epoch 100 | Loss 1.6884 | Val 0.2133 | Test 0.1867
+  Epoch 120 | Loss 1.6512 | Val 0.2400 | Test 0.1467
+  Epoch 140 | Loss 1.6597 | Val 0.1467 | Test 0.2400
+  Epoch 160 | Loss 1.6583 | Val 0.2000 | Test 0.1333
+  Epoch 180 | Loss 1.6817 | Val 0.2133 | Test 0.1067
+  Epoch 200 | Loss 1.6638 | Val 0.1733 | Test 0.1200
+  → acc=0.147 | MAD=0.188 | jac=0.0362 | E=20
+
+[3] ring | Random | b=0.25
+  Epoch 020 | Loss 1.6593 | Val 0.1733 | Test 0.1600
+  Epoch 040 | Loss 1.6588 | Val 0.2267 | Test 0.1333
+  Epoch 060 | Loss 1.7414 | Val 0.1600 | Test 0.1733
+  Epoch 080 | Loss 1.6752 | Val 0.1867 | Test 0.1333
+  Epoch 100 | Loss 1.6775 | Val 0.2667 | Test 0.2133
+  Epoch 120 | Loss 1.6709 | Val 0.2000 | Test 0.1333
+  Epoch 140 | Loss 1.7320 | Val 0.1600 | Test 0.1600
+  Epoch 160 | Loss 1.6465 | Val 0.2267 | Test 0.1200
+  Epoch 180 | Loss 1.6956 | Val 0.2133 | Test 0.1600
+  Epoch 200 | Loss 1.6403 | Val 0.2267 | Test 0.2400
+  → acc=0.213 | MAD=0.341 | jac=0.0553 | E=25
+
+[4] ring | Random | b=0.75
+  Epoch 020 | Loss 1.4625 | Val 0.7733 | Test 0.7600
+  Epoch 040 | Loss 1.4888 | Val 0.4800 | Test 0.4000
+  Epoch 060 | Loss 1.4414 | Val 0.4933 | Test 0.3733
+  Epoch 080 | Loss 1.5098 | Val 0.5600 | Test 0.5200
+  Epoch 100 | Loss 1.4580 | Val 0.6133 | Test 0.5467
+  Epoch 120 | Loss 1.4100 | Val 0.2933 | Test 0.2800
+  Epoch 140 | Loss 1.4426 | Val 0.4800 | Test 0.3733
+  Epoch 160 | Loss 1.5164 | Val 0.3333 | Test 0.2800
+  Epoch 180 | Loss 1.4495 | Val 0.5067 | Test 0.4133
+  Epoch 200 | Loss 1.4750 | Val 0.4000 | Test 0.3200
+  → acc=0.760 | MAD=0.498 | jac=0.4051 | E=35
+
+[5] ring | Random | b=1.5
+  Epoch 020 | Loss 1.2425 | Val 0.7200 | Test 0.6667
+  Epoch 040 | Loss 1.1810 | Val 0.6533 | Test 0.5600
+  Epoch 060 | Loss 1.2057 | Val 0.6933 | Test 0.7333
+  Epoch 080 | Loss 1.1615 | Val 0.8933 | Test 0.8267
+  Epoch 100 | Loss 1.1406 | Val 0.9333 | Test 0.9333
+  Epoch 120 | Loss 1.0865 | Val 0.6267 | Test 0.4933
+  Epoch 140 | Loss 1.1077 | Val 0.8000 | Test 0.6667
+  Epoch 160 | Loss 1.1427 | Val 0.9600 | Test 0.9200
+  Epoch 180 | Loss 1.1244 | Val 0.7067 | Test 0.6267
+  Epoch 200 | Loss 1.1526 | Val 0.9467 | Test 0.8933
+  → acc=0.920 | MAD=0.225 | jac=0.5666 | E=50
+
+[6] ring | K-hop | b=0.0
+  Epoch 020 | Loss 1.6923 | Val 0.2133 | Test 0.2133
+  Epoch 040 | Loss 1.6846 | Val 0.2000 | Test 0.1333
+  Epoch 060 | Loss 1.6781 | Val 0.1067 | Test 0.2933
+  Epoch 080 | Loss 1.6762 | Val 0.1733 | Test 0.1200
+  Epoch 100 | Loss 1.6884 | Val 0.2133 | Test 0.1867
+  Epoch 120 | Loss 1.6512 | Val 0.2400 | Test 0.1467
+  Epoch 140 | Loss 1.6597 | Val 0.1467 | Test 0.2400
+  Epoch 160 | Loss 1.6583 | Val 0.2000 | Test 0.1333
+  Epoch 180 | Loss 1.6817 | Val 0.2133 | Test 0.1067
+  Epoch 200 | Loss 1.6638 | Val 0.1733 | Test 0.1200
+  → acc=0.147 | MAD=0.188 | jac=0.0362 | E=20
+
+[7] ring | K-hop | b=0.25
+  Epoch 020 | Loss 1.3908 | Val 0.6000 | Test 0.6533
+  Epoch 040 | Loss 1.3563 | Val 0.5867 | Test 0.5733
+  Epoch 060 | Loss 1.4081 | Val 0.6400 | Test 0.6667
+  Epoch 080 | Loss 1.4787 | Val 0.7200 | Test 0.7200
+  Epoch 100 | Loss 1.3981 | Val 0.5867 | Test 0.4667
+  Epoch 120 | Loss 1.4885 | Val 0.6400 | Test 0.5733
+  Epoch 140 | Loss 1.3322 | Val 0.7067 | Test 0.7600
+  Epoch 160 | Loss 1.4002 | Val 0.6933 | Test 0.7067
+  Epoch 180 | Loss 1.3993 | Val 0.6267 | Test 0.6400
+  Epoch 200 | Loss 1.4832 | Val 0.6267 | Test 0.7467
+  → acc=0.720 | MAD=0.309 | jac=1.0760 | E=25
+
+[8] ring | K-hop | b=0.75
+  Epoch 020 | Loss 1.0105 | Val 0.9867 | Test 0.9867
+  Epoch 040 | Loss 1.0539 | Val 1.0000 | Test 1.0000
+  Epoch 060 | Loss 1.0855 | Val 1.0000 | Test 0.9733
+  Epoch 080 | Loss 1.1205 | Val 1.0000 | Test 1.0000
+  Epoch 100 | Loss 1.0935 | Val 1.0000 | Test 1.0000
+  Epoch 120 | Loss 1.1380 | Val 0.9867 | Test 0.9867
+  Epoch 140 | Loss 1.0325 | Val 1.0000 | Test 0.9733
+  Epoch 160 | Loss 1.1616 | Val 1.0000 | Test 1.0000
+  Epoch 180 | Loss 1.0884 | Val 0.9600 | Test 1.0000
+  Epoch 200 | Loss 1.0841 | Val 1.0000 | Test 0.9867
+  → acc=1.000 | MAD=0.267 | jac=0.1227 | E=35
+
+[9] ring | K-hop | b=1.5
+  Epoch 020 | Loss 0.9983 | Val 0.8000 | Test 0.7067
+  Epoch 040 | Loss 0.9506 | Val 0.6000 | Test 0.5200
+  Epoch 060 | Loss 1.0021 | Val 0.8000 | Test 0.6933
+  Epoch 080 | Loss 1.0095 | Val 0.8000 | Test 0.7867
+  Epoch 100 | Loss 0.9740 | Val 0.8133 | Test 0.7200
+  Epoch 120 | Loss 1.0439 | Val 0.9867 | Test 0.9867
+  Epoch 140 | Loss 0.8982 | Val 0.6000 | Test 0.5600
+  Epoch 160 | Loss 1.0994 | Val 0.8267 | Test 0.8800
+  Epoch 180 | Loss 0.9484 | Val 0.8933 | Test 0.8133
+  Epoch 200 | Loss 0.9733 | Val 0.9467 | Test 0.9867
+  → acc=0.987 | MAD=0.188 | jac=1.4393 | E=50
+
+[10] ring | FeatureSim | b=0.0
+  Epoch 020 | Loss 1.6923 | Val 0.2133 | Test 0.2133
+  Epoch 040 | Loss 1.6846 | Val 0.2000 | Test 0.1333
+  Epoch 060 | Loss 1.6781 | Val 0.1067 | Test 0.2933
+  Epoch 080 | Loss 1.6762 | Val 0.1733 | Test 0.1200
+  Epoch 100 | Loss 1.6884 | Val 0.2133 | Test 0.1867
+  Epoch 120 | Loss 1.6512 | Val 0.2400 | Test 0.1467
+  Epoch 140 | Loss 1.6597 | Val 0.1467 | Test 0.2400
+  Epoch 160 | Loss 1.6583 | Val 0.2000 | Test 0.1333
+  Epoch 180 | Loss 1.6817 | Val 0.2133 | Test 0.1067
+  Epoch 200 | Loss 1.6638 | Val 0.1733 | Test 0.1200
+  → acc=0.147 | MAD=0.188 | jac=0.0362 | E=20
+
+[11] ring | FeatureSim | b=0.25
+  Epoch 020 | Loss 1.6838 | Val 0.2400 | Test 0.2133
+  Epoch 040 | Loss 1.6501 | Val 0.1867 | Test 0.1200
+  Epoch 060 | Loss 1.6580 | Val 0.2000 | Test 0.1867
+  Epoch 080 | Loss 1.6895 | Val 0.2000 | Test 0.1867
+  Epoch 100 | Loss 1.6625 | Val 0.2267 | Test 0.1733
+  Epoch 120 | Loss 1.6687 | Val 0.2267 | Test 0.1467
+  Epoch 140 | Loss 1.6746 | Val 0.1867 | Test 0.3067
+  Epoch 160 | Loss 1.7097 | Val 0.2533 | Test 0.2000
+  Epoch 180 | Loss 1.6724 | Val 0.1867 | Test 0.1200
+  Epoch 200 | Loss 1.6798 | Val 0.1867 | Test 0.1867
+  → acc=0.200 | MAD=0.329 | jac=0.0507 | E=25
+
+[12] ring | FeatureSim | b=0.75
+  Epoch 020 | Loss 1.4888 | Val 0.5200 | Test 0.4400
+  Epoch 040 | Loss 1.5036 | Val 0.3867 | Test 0.3067
+  Epoch 060 | Loss 1.5326 | Val 0.7733 | Test 0.7467
+  Epoch 080 | Loss 1.4689 | Val 0.6000 | Test 0.4800
+  Epoch 100 | Loss 1.4988 | Val 0.3200 | Test 0.2800
+  Epoch 120 | Loss 1.6306 | Val 0.4133 | Test 0.4133
+  Epoch 140 | Loss 1.4500 | Val 0.4000 | Test 0.4267
+  Epoch 160 | Loss 1.5153 | Val 0.6133 | Test 0.6000
+  Epoch 180 | Loss 1.4871 | Val 0.3333 | Test 0.3200
+  Epoch 200 | Loss 1.5184 | Val 0.4800 | Test 0.4000
+  → acc=0.747 | MAD=0.391 | jac=0.4245 | E=35
+
+[13] ring | FeatureSim | b=1.5
+  Epoch 020 | Loss 1.2478 | Val 0.6000 | Test 0.5467
+  Epoch 040 | Loss 1.1524 | Val 0.5467 | Test 0.5333
+  Epoch 060 | Loss 1.2286 | Val 0.6667 | Test 0.6000
+  Epoch 080 | Loss 1.2421 | Val 0.6667 | Test 0.5333
+  Epoch 100 | Loss 1.1646 | Val 0.7467 | Test 0.7867
+  Epoch 120 | Loss 1.2393 | Val 0.5867 | Test 0.6000
+  Epoch 140 | Loss 1.2865 | Val 0.7867 | Test 0.8533
+  Epoch 160 | Loss 1.2163 | Val 0.8267 | Test 0.8267
+  Epoch 180 | Loss 1.1701 | Val 0.6533 | Test 0.4933
+  Epoch 200 | Loss 1.2398 | Val 0.6267 | Test 0.6667
+  → acc=0.827 | MAD=0.334 | jac=0.5950 | E=50
+
+[14] cora | Baseline | b=0.0
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.x
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.tx
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.allx
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.y
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.ty
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.ally
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.graph
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.test.index
+Processing...
+Done!
+  Epoch 050 | Loss 1.2107 | Val 0.7880 | Test 0.7940
+  Epoch 100 | Loss 0.7879 | Val 0.8020 | Test 0.8160
+  Epoch 150 | Loss 0.7338 | Val 0.8020 | Test 0.8180
+  Epoch 200 | Loss 0.6628 | Val 0.7980 | Test 0.8110
+  → acc=0.832 | MAD=0.669 | jac=7.4691 | E=5278
+
+[15] cora | Random | b=0.0
+  Epoch 050 | Loss 1.0999 | Val 0.7980 | Test 0.8170
+  Epoch 100 | Loss 0.8479 | Val 0.7920 | Test 0.8040
+  Epoch 150 | Loss 0.7480 | Val 0.7980 | Test 0.8150
+  Epoch 200 | Loss 0.7304 | Val 0.8080 | Test 0.8290
+  → acc=0.834 | MAD=0.654 | jac=4.7839 | E=5278
+
+[16] cora | Random | b=0.25
+  Epoch 050 | Loss 1.3476 | Val 0.7480 | Test 0.7610
+  Epoch 100 | Loss 0.9879 | Val 0.7580 | Test 0.7630
+  Epoch 150 | Loss 0.8270 | Val 0.7360 | Test 0.7470
+  Epoch 200 | Loss 0.6564 | Val 0.7580 | Test 0.7890
+  → acc=0.790 | MAD=0.600 | jac=6.3092 | E=6597
+
+[17] cora | Random | b=0.75
+  Epoch 050 | Loss 1.5837 | Val 0.7020 | Test 0.6550
+  Epoch 100 | Loss 1.0885 | Val 0.7080 | Test 0.6770
+  Epoch 150 | Loss 0.9505 | Val 0.7040 | Test 0.6890
+  Epoch 200 | Loss 0.7936 | Val 0.7080 | Test 0.6890
+  → acc=0.714 | MAD=0.465 | jac=2.7143 | E=9236
+
+[18] cora | Random | b=1.5
+  Epoch 050 | Loss 1.7608 | Val 0.4280 | Test 0.4410
+  Epoch 100 | Loss 1.4680 | Val 0.5360 | Test 0.5250
+  Epoch 150 | Loss 1.2325 | Val 0.6460 | Test 0.6260
+  Epoch 200 | Loss 1.0178 | Val 0.6440 | Test 0.6500
+  → acc=0.646 | MAD=0.392 | jac=2.5950 | E=13195
+
+[19] cora | K-hop | b=0.0
+  Epoch 050 | Loss 1.2137 | Val 0.7820 | Test 0.8070
+  Epoch 100 | Loss 0.8770 | Val 0.7880 | Test 0.8010
+  Epoch 150 | Loss 0.6567 | Val 0.8060 | Test 0.8290
+  Epoch 200 | Loss 0.5765 | Val 0.7940 | Test 0.8220
+  → acc=0.809 | MAD=0.601 | jac=4.2629 | E=5278
+
+[20] cora | K-hop | b=0.25
+  Epoch 050 | Loss 1.2064 | Val 0.7540 | Test 0.7580
+  Epoch 100 | Loss 0.8092 | Val 0.7620 | Test 0.7910
+  Epoch 150 | Loss 0.7577 | Val 0.7600 | Test 0.7910
+  Epoch 200 | Loss 0.6669 | Val 0.7600 | Test 0.7980
+  → acc=0.815 | MAD=0.627 | jac=8.3927 | E=6597
+
+[21] cora | K-hop | b=0.75
+  Epoch 050 | Loss 1.3266 | Val 0.7300 | Test 0.7300
+  Epoch 100 | Loss 1.0102 | Val 0.7260 | Test 0.7470
+  Epoch 150 | Loss 0.7611 | Val 0.7360 | Test 0.7790
+  Epoch 200 | Loss 0.6709 | Val 0.7260 | Test 0.7720
+  → acc=0.781 | MAD=0.623 | jac=6.4891 | E=9236
+
+[22] cora | K-hop | b=1.5
+  Epoch 050 | Loss 1.3580 | Val 0.6780 | Test 0.6860
+  Epoch 100 | Loss 0.9949 | Val 0.7080 | Test 0.7420
+  Epoch 150 | Loss 0.8281 | Val 0.7060 | Test 0.7490
+  Epoch 200 | Loss 0.6784 | Val 0.6980 | Test 0.7390
+  → acc=0.745 | MAD=0.585 | jac=2.8627 | E=13195
+
+[23] cora | FeatureSim | b=0.0
+  Epoch 050 | Loss 1.2136 | Val 0.8040 | Test 0.8190
+  Epoch 100 | Loss 0.8311 | Val 0.8180 | Test 0.8180
+  Epoch 150 | Loss 0.6561 | Val 0.7920 | Test 0.8100
+  Epoch 200 | Loss 0.6625 | Val 0.7980 | Test 0.8290
+  → acc=0.818 | MAD=0.664 | jac=3.3646 | E=5278
+
+[24] cora | FeatureSim | b=0.25
+  Epoch 050 | Loss 1.1740 | Val 0.7620 | Test 0.7690
+  Epoch 100 | Loss 0.7415 | Val 0.7660 | Test 0.7860
+  Epoch 150 | Loss 0.6293 | Val 0.7760 | Test 0.7780
+  Epoch 200 | Loss 0.5836 | Val 0.7740 | Test 0.7870
+  → acc=0.796 | MAD=0.582 | jac=1.8512 | E=6597
+
+[25] cora | FeatureSim | b=0.75
+  Epoch 050 | Loss 1.1658 | Val 0.7340 | Test 0.7440
+  Epoch 100 | Loss 0.8062 | Val 0.7500 | Test 0.7600
+  Epoch 150 | Loss 0.6863 | Val 0.7480 | Test 0.7720
+  Epoch 200 | Loss 0.5602 | Val 0.7600 | Test 0.7830
+  → acc=0.774 | MAD=0.571 | jac=2.5455 | E=9236
+
+[26] cora | FeatureSim | b=1.5
+  Epoch 050 | Loss 1.3944 | Val 0.7220 | Test 0.7190
+  Epoch 100 | Loss 0.9748 | Val 0.7000 | Test 0.7030
+  Epoch 150 | Loss 0.8351 | Val 0.7080 | Test 0.6990
+  Epoch 200 | Loss 0.8494 | Val 0.7260 | Test 0.7230
+  → acc=0.741 | MAD=0.517 | jac=0.5907 | E=13195
+
+[27] mnist | Baseline | b=0.0
+Downloading https://data.pyg.org/datasets/MNISTSuperpixels.zip
+Extracting data/raw/MNISTSuperpixels.zip
+Processing...
+Done!
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.2437 | Val 0.0875 | Test 0.1040
+  Epoch 02/25 | Loss 1.9320 | Val 0.1187 | Test 0.1390
+  Epoch 03/25 | Loss 1.6485 | Val 0.5150 | Test 0.4810
+  Epoch 04/25 | Loss 1.4451 | Val 0.5625 | Test 0.5510
+  Epoch 05/25 | Loss 1.3016 | Val 0.6212 | Test 0.5910
+  Epoch 06/25 | Loss 1.2220 | Val 0.6488 | Test 0.6440
+  Epoch 07/25 | Loss 1.1460 | Val 0.6613 | Test 0.6320
+  Epoch 08/25 | Loss 1.0793 | Val 0.6300 | Test 0.6380
+  Epoch 09/25 | Loss 1.0344 | Val 0.6987 | Test 0.7030
+  Epoch 10/25 | Loss 0.9714 | Val 0.7300 | Test 0.7220
+  Epoch 11/25 | Loss 0.9366 | Val 0.7262 | Test 0.7190
+  Epoch 12/25 | Loss 0.8962 | Val 0.7325 | Test 0.7230
+  Epoch 13/25 | Loss 0.8468 | Val 0.7525 | Test 0.7460
+  Epoch 14/25 | Loss 0.8319 | Val 0.7850 | Test 0.7740
+  Epoch 15/25 | Loss 0.8246 | Val 0.7650 | Test 0.7650
+  Epoch 16/25 | Loss 0.7824 | Val 0.7825 | Test 0.7900
+  Epoch 17/25 | Loss 0.7768 | Val 0.7825 | Test 0.7700
+  Epoch 18/25 | Loss 0.7629 | Val 0.8000 | Test 0.7910
+  Epoch 19/25 | Loss 0.7430 | Val 0.7913 | Test 0.7880
+  Epoch 20/25 | Loss 0.7261 | Val 0.8013 | Test 0.8000
+  Epoch 21/25 | Loss 0.7295 | Val 0.8025 | Test 0.7910
+  Epoch 22/25 | Loss 0.7237 | Val 0.8050 | Test 0.7970
+  Epoch 23/25 | Loss 0.7151 | Val 0.8050 | Test 0.7920
+  Epoch 24/25 | Loss 0.7055 | Val 0.8050 | Test 0.7960
+  Epoch 25/25 | Loss 0.7106 | Val 0.8037 | Test 0.7950
+  → acc=0.797 | MAD=0.207 | jac=0.5897 | E=722
+
+[28] mnist | Random | b=0.0
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.2241 | Val 0.0975 | Test 0.1210
+  Epoch 02/25 | Loss 1.9067 | Val 0.2412 | Test 0.2110
+  Epoch 03/25 | Loss 1.5830 | Val 0.5737 | Test 0.5500
+  Epoch 04/25 | Loss 1.3641 | Val 0.6025 | Test 0.5860
+  Epoch 05/25 | Loss 1.2309 | Val 0.5813 | Test 0.5870
+  Epoch 06/25 | Loss 1.1373 | Val 0.6587 | Test 0.6780
+  Epoch 07/25 | Loss 1.0462 | Val 0.6750 | Test 0.6770
+  Epoch 08/25 | Loss 0.9658 | Val 0.7362 | Test 0.7180
+  Epoch 09/25 | Loss 0.9093 | Val 0.7300 | Test 0.7360
+  Epoch 10/25 | Loss 0.8817 | Val 0.7388 | Test 0.7560
+  Epoch 11/25 | Loss 0.8150 | Val 0.7612 | Test 0.7710
+  Epoch 12/25 | Loss 0.7858 | Val 0.7963 | Test 0.7820
+  Epoch 13/25 | Loss 0.7509 | Val 0.8175 | Test 0.8150
+  Epoch 14/25 | Loss 0.7355 | Val 0.8075 | Test 0.8130
+  Epoch 15/25 | Loss 0.7196 | Val 0.8087 | Test 0.8190
+  Epoch 16/25 | Loss 0.6867 | Val 0.8250 | Test 0.8190
+  Epoch 17/25 | Loss 0.6592 | Val 0.8200 | Test 0.8210
+  Epoch 18/25 | Loss 0.6518 | Val 0.8137 | Test 0.8270
+  Epoch 19/25 | Loss 0.6194 | Val 0.8250 | Test 0.8310
+  Epoch 20/25 | Loss 0.6267 | Val 0.8213 | Test 0.8270
+  Epoch 21/25 | Loss 0.6117 | Val 0.8287 | Test 0.8340
+  Epoch 22/25 | Loss 0.6239 | Val 0.8275 | Test 0.8360
+  Epoch 23/25 | Loss 0.6068 | Val 0.8287 | Test 0.8350
+  Epoch 24/25 | Loss 0.5983 | Val 0.8263 | Test 0.8340
+  Epoch 25/25 | Loss 0.6189 | Val 0.8263 | Test 0.8360
+  → acc=0.834 | MAD=0.353 | jac=1.0342 | E=670
+
+[29] mnist | Random | b=0.25
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+    Aplicando rewiring Random budget=0.25...
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.1619 | Val 0.0988 | Test 0.1040
+  Epoch 02/25 | Loss 1.7367 | Val 0.1475 | Test 0.1600
+  Epoch 03/25 | Loss 1.4891 | Val 0.4900 | Test 0.4760
+  Epoch 04/25 | Loss 1.3827 | Val 0.4688 | Test 0.4590
+  Epoch 05/25 | Loss 1.2868 | Val 0.5337 | Test 0.5400
+  Epoch 06/25 | Loss 1.1926 | Val 0.5737 | Test 0.5700
+  Epoch 07/25 | Loss 1.1465 | Val 0.5200 | Test 0.5290
+  Epoch 08/25 | Loss 1.0965 | Val 0.5750 | Test 0.5770
+  Epoch 09/25 | Loss 1.0581 | Val 0.6238 | Test 0.6350
+  Epoch 10/25 | Loss 1.0145 | Val 0.6512 | Test 0.6330
+  Epoch 11/25 | Loss 0.9592 | Val 0.6550 | Test 0.6450
+  Epoch 12/25 | Loss 0.9631 | Val 0.6512 | Test 0.6690
+  Epoch 13/25 | Loss 0.9206 | Val 0.6500 | Test 0.6620
+  Epoch 14/25 | Loss 0.8746 | Val 0.6975 | Test 0.6950
+  Epoch 15/25 | Loss 0.8603 | Val 0.6950 | Test 0.6920
+  Epoch 16/25 | Loss 0.8443 | Val 0.6950 | Test 0.6990
+  Epoch 17/25 | Loss 0.8384 | Val 0.7087 | Test 0.7130
+  Epoch 18/25 | Loss 0.8185 | Val 0.7100 | Test 0.7090
+  Epoch 19/25 | Loss 0.8038 | Val 0.7050 | Test 0.7180
+  Epoch 20/25 | Loss 0.7999 | Val 0.7163 | Test 0.7150
+  Epoch 21/25 | Loss 0.7783 | Val 0.7212 | Test 0.7260
+  Epoch 22/25 | Loss 0.7805 | Val 0.7113 | Test 0.7230
+  Epoch 23/25 | Loss 0.7798 | Val 0.7188 | Test 0.7240
+  Epoch 24/25 | Loss 0.7768 | Val 0.7150 | Test 0.7330
+  Epoch 25/25 | Loss 0.7907 | Val 0.7212 | Test 0.7250
+  → acc=0.726 | MAD=0.107 | jac=0.8337 | E=843
+
+[30] mnist | Random | b=0.75
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+    Aplicando rewiring Random budget=0.75...
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.1764 | Val 0.0887 | Test 0.1010
+  Epoch 02/25 | Loss 1.9715 | Val 0.0887 | Test 0.1020
+  Epoch 03/25 | Loss 1.8062 | Val 0.3125 | Test 0.3110
+  Epoch 04/25 | Loss 1.6605 | Val 0.3538 | Test 0.3440
+  Epoch 05/25 | Loss 1.4505 | Val 0.4750 | Test 0.4830
+  Epoch 06/25 | Loss 1.3243 | Val 0.5600 | Test 0.5840
+  Epoch 07/25 | Loss 1.1873 | Val 0.6200 | Test 0.6280
+  Epoch 08/25 | Loss 1.1318 | Val 0.6262 | Test 0.6560
+  Epoch 09/25 | Loss 1.0572 | Val 0.6500 | Test 0.6440
+  Epoch 10/25 | Loss 0.9963 | Val 0.6587 | Test 0.6780
+  Epoch 11/25 | Loss 0.9776 | Val 0.6737 | Test 0.6680
+  Epoch 12/25 | Loss 0.9678 | Val 0.6900 | Test 0.6770
+  Epoch 13/25 | Loss 0.8984 | Val 0.6725 | Test 0.6930
+  Epoch 14/25 | Loss 0.8759 | Val 0.6825 | Test 0.7030
+  Epoch 15/25 | Loss 0.8750 | Val 0.7125 | Test 0.7180
+  Epoch 16/25 | Loss 0.8563 | Val 0.7000 | Test 0.7160
+  Epoch 17/25 | Loss 0.8266 | Val 0.7087 | Test 0.7300
+  Epoch 18/25 | Loss 0.8141 | Val 0.7288 | Test 0.7340
+  Epoch 19/25 | Loss 0.8064 | Val 0.7375 | Test 0.7270
+  Epoch 20/25 | Loss 0.8124 | Val 0.7212 | Test 0.7270
+  Epoch 21/25 | Loss 0.7943 | Val 0.7325 | Test 0.7230
+  Epoch 22/25 | Loss 0.7954 | Val 0.7362 | Test 0.7380
+  Epoch 23/25 | Loss 0.7924 | Val 0.7312 | Test 0.7360
+  Epoch 24/25 | Loss 0.7608 | Val 0.7350 | Test 0.7330
+  Epoch 25/25 | Loss 0.7690 | Val 0.7325 | Test 0.7280
+  → acc=0.727 | MAD=0.001 | jac=0.8469 | E=1368
+
+[31] mnist | Random | b=1.5
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+    Aplicando rewiring Random budget=1.5...
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.2484 | Val 0.1000 | Test 0.1260
+  Epoch 02/25 | Loss 2.0989 | Val 0.1000 | Test 0.1260
+  Epoch 03/25 | Loss 1.9522 | Val 0.1113 | Test 0.1380
+  Epoch 04/25 | Loss 1.7749 | Val 0.4037 | Test 0.4110
+  Epoch 05/25 | Loss 1.5990 | Val 0.3400 | Test 0.3610
+  Epoch 06/25 | Loss 1.4666 | Val 0.4700 | Test 0.4750
+  Epoch 07/25 | Loss 1.3510 | Val 0.5337 | Test 0.5330
+  Epoch 08/25 | Loss 1.2930 | Val 0.5913 | Test 0.5680
+  Epoch 09/25 | Loss 1.2005 | Val 0.6162 | Test 0.6220
+  Epoch 10/25 | Loss 1.1612 | Val 0.6362 | Test 0.6180
+  Epoch 11/25 | Loss 1.1131 | Val 0.6388 | Test 0.6350
+  Epoch 12/25 | Loss 1.0753 | Val 0.6725 | Test 0.6530
+  Epoch 13/25 | Loss 1.0404 | Val 0.6575 | Test 0.6460
+  Epoch 14/25 | Loss 1.0031 | Val 0.6787 | Test 0.6820
+  Epoch 15/25 | Loss 0.9970 | Val 0.6650 | Test 0.6770
+  Epoch 16/25 | Loss 0.9764 | Val 0.6737 | Test 0.6810
+  Epoch 17/25 | Loss 0.9532 | Val 0.7000 | Test 0.6930
+  Epoch 18/25 | Loss 0.9460 | Val 0.6863 | Test 0.6880
+  Epoch 19/25 | Loss 0.9181 | Val 0.7037 | Test 0.7030
+  Epoch 20/25 | Loss 0.9005 | Val 0.6937 | Test 0.6880
+  Epoch 21/25 | Loss 0.9032 | Val 0.7075 | Test 0.7060
+  Epoch 22/25 | Loss 0.8828 | Val 0.7100 | Test 0.7010
+  Epoch 23/25 | Loss 0.8842 | Val 0.7163 | Test 0.7010
+  Epoch 24/25 | Loss 0.8879 | Val 0.7125 | Test 0.6960
+  Epoch 25/25 | Loss 0.8789 | Val 0.7087 | Test 0.7040
+  → acc=0.701 | MAD=0.002 | jac=2.5315 | E=1657
+
+[32] mnist | K-hop | b=0.0
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.2622 | Val 0.0900 | Test 0.0870
+  Epoch 02/25 | Loss 1.9933 | Val 0.1950 | Test 0.2030
+  Epoch 03/25 | Loss 1.6080 | Val 0.5162 | Test 0.5360
+  Epoch 04/25 | Loss 1.3712 | Val 0.5900 | Test 0.6070
+  Epoch 05/25 | Loss 1.2373 | Val 0.6162 | Test 0.6270
+  Epoch 06/25 | Loss 1.1435 | Val 0.6388 | Test 0.6650
+  Epoch 07/25 | Loss 1.0831 | Val 0.6675 | Test 0.6820
+  Epoch 08/25 | Loss 1.0053 | Val 0.6587 | Test 0.7100
+  Epoch 09/25 | Loss 0.9625 | Val 0.6600 | Test 0.6910
+  Epoch 10/25 | Loss 0.9000 | Val 0.7475 | Test 0.7650
+  Epoch 11/25 | Loss 0.8420 | Val 0.7488 | Test 0.7950
+  Epoch 12/25 | Loss 0.8177 | Val 0.7712 | Test 0.7990
+  Epoch 13/25 | Loss 0.7677 | Val 0.7475 | Test 0.7790
+  Epoch 14/25 | Loss 0.7483 | Val 0.7913 | Test 0.8220
+  Epoch 15/25 | Loss 0.7166 | Val 0.8037 | Test 0.8260
+  Epoch 16/25 | Loss 0.6952 | Val 0.7950 | Test 0.8300
+  Epoch 17/25 | Loss 0.6773 | Val 0.8187 | Test 0.8360
+  Epoch 18/25 | Loss 0.6567 | Val 0.8200 | Test 0.8360
+  Epoch 19/25 | Loss 0.6214 | Val 0.8275 | Test 0.8350
+  Epoch 20/25 | Loss 0.6302 | Val 0.8300 | Test 0.8490
+  Epoch 21/25 | Loss 0.6309 | Val 0.8250 | Test 0.8520
+  Epoch 22/25 | Loss 0.5996 | Val 0.8325 | Test 0.8490
+  Epoch 23/25 | Loss 0.6109 | Val 0.8313 | Test 0.8490
+  Epoch 24/25 | Loss 0.6139 | Val 0.8363 | Test 0.8520
+  Epoch 25/25 | Loss 0.6003 | Val 0.8363 | Test 0.8530
+  → acc=0.852 | MAD=0.272 | jac=1.0455 | E=726
+
+[33] mnist | K-hop | b=0.25
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+    Aplicando rewiring K-hop budget=0.25...
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.0841 | Val 0.1163 | Test 0.1370
+  Epoch 02/25 | Loss 1.6979 | Val 0.1550 | Test 0.1800
+  Epoch 03/25 | Loss 1.4616 | Val 0.4575 | Test 0.4880
+  Epoch 04/25 | Loss 1.3115 | Val 0.5737 | Test 0.6080
+  Epoch 05/25 | Loss 1.1911 | Val 0.5775 | Test 0.6020
+  Epoch 06/25 | Loss 1.0976 | Val 0.6500 | Test 0.6400
+  Epoch 07/25 | Loss 1.0449 | Val 0.6863 | Test 0.6640
+  Epoch 08/25 | Loss 0.9814 | Val 0.6750 | Test 0.7000
+  Epoch 09/25 | Loss 0.9333 | Val 0.6763 | Test 0.6970
+  Epoch 10/25 | Loss 0.8737 | Val 0.7288 | Test 0.7140
+  Epoch 11/25 | Loss 0.8313 | Val 0.7325 | Test 0.7410
+  Epoch 12/25 | Loss 0.7915 | Val 0.7425 | Test 0.7490
+  Epoch 13/25 | Loss 0.7901 | Val 0.7438 | Test 0.7650
+  Epoch 14/25 | Loss 0.7421 | Val 0.7675 | Test 0.7750
+  Epoch 15/25 | Loss 0.7247 | Val 0.7788 | Test 0.7790
+  Epoch 16/25 | Loss 0.7106 | Val 0.7775 | Test 0.7810
+  Epoch 17/25 | Loss 0.6933 | Val 0.7788 | Test 0.7820
+  Epoch 18/25 | Loss 0.6754 | Val 0.7900 | Test 0.7920
+  Epoch 19/25 | Loss 0.6515 | Val 0.7800 | Test 0.7870
+  Epoch 20/25 | Loss 0.6370 | Val 0.7863 | Test 0.7960
+  Epoch 21/25 | Loss 0.6496 | Val 0.7875 | Test 0.7960
+  Epoch 22/25 | Loss 0.6337 | Val 0.7913 | Test 0.8010
+  Epoch 23/25 | Loss 0.6095 | Val 0.7913 | Test 0.7990
+  Epoch 24/25 | Loss 0.6245 | Val 0.7913 | Test 0.8020
+  Epoch 25/25 | Loss 0.6090 | Val 0.7963 | Test 0.8030
+  → acc=0.803 | MAD=0.088 | jac=1.6624 | E=815
+
+[34] mnist | K-hop | b=0.75
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+    Aplicando rewiring K-hop budget=0.75...
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.1383 | Val 0.1138 | Test 0.1110
+  Epoch 02/25 | Loss 1.8291 | Val 0.0988 | Test 0.0950
+  Epoch 03/25 | Loss 1.5886 | Val 0.3312 | Test 0.3200
+  Epoch 04/25 | Loss 1.4252 | Val 0.5000 | Test 0.4710
+  Epoch 05/25 | Loss 1.3065 | Val 0.5825 | Test 0.5550
+  Epoch 06/25 | Loss 1.1582 | Val 0.6375 | Test 0.6220
+  Epoch 07/25 | Loss 1.0714 | Val 0.6438 | Test 0.6500
+  Epoch 08/25 | Loss 1.0279 | Val 0.7050 | Test 0.6550
+  Epoch 09/25 | Loss 0.9496 | Val 0.7125 | Test 0.7020
+  Epoch 10/25 | Loss 0.9167 | Val 0.7025 | Test 0.6840
+  Epoch 11/25 | Loss 0.8669 | Val 0.7325 | Test 0.7140
+  Epoch 12/25 | Loss 0.8407 | Val 0.7388 | Test 0.7290
+  Epoch 13/25 | Loss 0.8115 | Val 0.7575 | Test 0.7440
+  Epoch 14/25 | Loss 0.7847 | Val 0.7688 | Test 0.7490
+  Epoch 15/25 | Loss 0.7754 | Val 0.7638 | Test 0.7590
+  Epoch 16/25 | Loss 0.7362 | Val 0.7462 | Test 0.7550
+  Epoch 17/25 | Loss 0.7251 | Val 0.7662 | Test 0.7420
+  Epoch 18/25 | Loss 0.6960 | Val 0.7662 | Test 0.7730
+  Epoch 19/25 | Loss 0.7063 | Val 0.7850 | Test 0.7680
+  Epoch 20/25 | Loss 0.6894 | Val 0.7863 | Test 0.7670
+  Epoch 21/25 | Loss 0.6718 | Val 0.7788 | Test 0.7770
+  Epoch 22/25 | Loss 0.6613 | Val 0.7775 | Test 0.7790
+  Epoch 23/25 | Loss 0.6642 | Val 0.7850 | Test 0.7780
+  Epoch 24/25 | Loss 0.6631 | Val 0.7875 | Test 0.7820
+  Epoch 25/25 | Loss 0.6603 | Val 0.7837 | Test 0.7790
+  → acc=0.782 | MAD=0.006 | jac=1.3510 | E=1234
+
+[35] mnist | K-hop | b=1.5
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+    Aplicando rewiring K-hop budget=1.5...
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.1973 | Val 0.1163 | Test 0.1140
+  Epoch 02/25 | Loss 1.8517 | Val 0.1525 | Test 0.1640
+  Epoch 03/25 | Loss 1.5693 | Val 0.1588 | Test 0.1760
+  Epoch 04/25 | Loss 1.3468 | Val 0.5100 | Test 0.5470
+  Epoch 05/25 | Loss 1.2105 | Val 0.6212 | Test 0.6480
+  Epoch 06/25 | Loss 1.0952 | Val 0.6637 | Test 0.6650
+  Epoch 07/25 | Loss 1.0140 | Val 0.6687 | Test 0.6970
+  Epoch 08/25 | Loss 0.9874 | Val 0.6937 | Test 0.7140
+  Epoch 09/25 | Loss 0.9096 | Val 0.7288 | Test 0.7420
+  Epoch 10/25 | Loss 0.8593 | Val 0.7275 | Test 0.7450
+  Epoch 11/25 | Loss 0.8292 | Val 0.7275 | Test 0.7470
+  Epoch 12/25 | Loss 0.7739 | Val 0.7388 | Test 0.7610
+  Epoch 13/25 | Loss 0.7520 | Val 0.7375 | Test 0.7710
+  Epoch 14/25 | Loss 0.7314 | Val 0.7475 | Test 0.7740
+  Epoch 15/25 | Loss 0.7059 | Val 0.7450 | Test 0.7710
+  Epoch 16/25 | Loss 0.6867 | Val 0.7600 | Test 0.7820
+  Epoch 17/25 | Loss 0.6764 | Val 0.7688 | Test 0.7900
+  Epoch 18/25 | Loss 0.6643 | Val 0.7738 | Test 0.7820
+  Epoch 19/25 | Loss 0.6276 | Val 0.7700 | Test 0.7960
+  Epoch 20/25 | Loss 0.6300 | Val 0.7738 | Test 0.7970
+  Epoch 21/25 | Loss 0.6241 | Val 0.7775 | Test 0.7900
+  Epoch 22/25 | Loss 0.6168 | Val 0.7700 | Test 0.7980
+  Epoch 23/25 | Loss 0.6087 | Val 0.7788 | Test 0.8020
+  Epoch 24/25 | Loss 0.6444 | Val 0.7863 | Test 0.7980
+  Epoch 25/25 | Loss 0.6119 | Val 0.7825 | Test 0.7990
+  → acc=0.798 | MAD=0.002 | jac=0.6825 | E=1605
+
+[36] mnist | FeatureSim | b=0.0
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.2068 | Val 0.1037 | Test 0.1220
+  Epoch 02/25 | Loss 1.9075 | Val 0.1388 | Test 0.1590
+  Epoch 03/25 | Loss 1.6912 | Val 0.4450 | Test 0.4600
+  Epoch 04/25 | Loss 1.5091 | Val 0.5300 | Test 0.5430
+  Epoch 05/25 | Loss 1.3523 | Val 0.5763 | Test 0.5710
+  Epoch 06/25 | Loss 1.2447 | Val 0.5525 | Test 0.5950
+  Epoch 07/25 | Loss 1.1408 | Val 0.6450 | Test 0.6500
+  Epoch 08/25 | Loss 1.0758 | Val 0.6538 | Test 0.6600
+  Epoch 09/25 | Loss 1.0093 | Val 0.6825 | Test 0.7120
+  Epoch 10/25 | Loss 0.9501 | Val 0.6825 | Test 0.7010
+  Epoch 11/25 | Loss 0.9182 | Val 0.7150 | Test 0.7120
+  Epoch 12/25 | Loss 0.8770 | Val 0.7362 | Test 0.7520
+  Epoch 13/25 | Loss 0.8456 | Val 0.7462 | Test 0.7610
+  Epoch 14/25 | Loss 0.8022 | Val 0.7650 | Test 0.7670
+  Epoch 15/25 | Loss 0.7651 | Val 0.7638 | Test 0.7800
+  Epoch 16/25 | Loss 0.7467 | Val 0.7875 | Test 0.7870
+  Epoch 17/25 | Loss 0.7177 | Val 0.7788 | Test 0.7830
+  Epoch 18/25 | Loss 0.6996 | Val 0.7900 | Test 0.8030
+  Epoch 19/25 | Loss 0.6931 | Val 0.7863 | Test 0.7980
+  Epoch 20/25 | Loss 0.6822 | Val 0.7887 | Test 0.8070
+  Epoch 21/25 | Loss 0.6715 | Val 0.7913 | Test 0.8030
+  Epoch 22/25 | Loss 0.6596 | Val 0.8050 | Test 0.8100
+  Epoch 23/25 | Loss 0.6688 | Val 0.8000 | Test 0.8060
+  Epoch 24/25 | Loss 0.6387 | Val 0.7987 | Test 0.8070
+  Epoch 25/25 | Loss 0.6636 | Val 0.8013 | Test 0.8050
+  → acc=0.810 | MAD=0.376 | jac=0.6130 | E=682
+
+[37] mnist | FeatureSim | b=0.25
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+    Aplicando rewiring FeatureSim budget=0.25...
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.1419 | Val 0.1150 | Test 0.1290
+  Epoch 02/25 | Loss 1.8260 | Val 0.1150 | Test 0.1290
+  Epoch 03/25 | Loss 1.5970 | Val 0.4175 | Test 0.3950
+  Epoch 04/25 | Loss 1.4278 | Val 0.5650 | Test 0.5610
+  Epoch 05/25 | Loss 1.3062 | Val 0.5875 | Test 0.5890
+  Epoch 06/25 | Loss 1.2482 | Val 0.6125 | Test 0.6030
+  Epoch 07/25 | Loss 1.1872 | Val 0.6412 | Test 0.6470
+  Epoch 08/25 | Loss 1.1150 | Val 0.6562 | Test 0.6510
+  Epoch 09/25 | Loss 1.0737 | Val 0.6650 | Test 0.6520
+  Epoch 10/25 | Loss 1.0437 | Val 0.6538 | Test 0.6690
+  Epoch 11/25 | Loss 1.0056 | Val 0.6963 | Test 0.6680
+  Epoch 12/25 | Loss 0.9724 | Val 0.6863 | Test 0.6760
+  Epoch 13/25 | Loss 0.9293 | Val 0.6837 | Test 0.6740
+  Epoch 14/25 | Loss 0.9096 | Val 0.6950 | Test 0.6980
+  Epoch 15/25 | Loss 0.8925 | Val 0.7262 | Test 0.7190
+  Epoch 16/25 | Loss 0.8429 | Val 0.7250 | Test 0.7190
+  Epoch 17/25 | Loss 0.8568 | Val 0.7137 | Test 0.7120
+  Epoch 18/25 | Loss 0.8211 | Val 0.7388 | Test 0.7320
+  Epoch 19/25 | Loss 0.8294 | Val 0.7350 | Test 0.7260
+  Epoch 20/25 | Loss 0.8060 | Val 0.7500 | Test 0.7410
+  Epoch 21/25 | Loss 0.7877 | Val 0.7475 | Test 0.7440
+  Epoch 22/25 | Loss 0.8071 | Val 0.7575 | Test 0.7490
+  Epoch 23/25 | Loss 0.7886 | Val 0.7525 | Test 0.7450
+  Epoch 24/25 | Loss 0.7761 | Val 0.7488 | Test 0.7480
+  Epoch 25/25 | Loss 0.7824 | Val 0.7575 | Test 0.7490
+  → acc=0.749 | MAD=0.359 | jac=0.9021 | E=825
+
+[38] mnist | FeatureSim | b=0.75
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+    Aplicando rewiring FeatureSim budget=0.75...
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.1981 | Val 0.1163 | Test 0.1150
+  Epoch 02/25 | Loss 1.9571 | Val 0.1200 | Test 0.1200
+  Epoch 03/25 | Loss 1.7328 | Val 0.3688 | Test 0.3520
+  Epoch 04/25 | Loss 1.5962 | Val 0.4363 | Test 0.4080
+  Epoch 05/25 | Loss 1.5004 | Val 0.5262 | Test 0.5080
+  Epoch 06/25 | Loss 1.3869 | Val 0.5825 | Test 0.5730
+  Epoch 07/25 | Loss 1.2956 | Val 0.5675 | Test 0.5550
+  Epoch 08/25 | Loss 1.2110 | Val 0.6625 | Test 0.6490
+  Epoch 09/25 | Loss 1.1125 | Val 0.6637 | Test 0.6670
+  Epoch 10/25 | Loss 1.0153 | Val 0.6863 | Test 0.6580
+  Epoch 11/25 | Loss 0.9431 | Val 0.7125 | Test 0.6910
+  Epoch 12/25 | Loss 0.9051 | Val 0.7225 | Test 0.7160
+  Epoch 13/25 | Loss 0.8522 | Val 0.7450 | Test 0.7450
+  Epoch 14/25 | Loss 0.8269 | Val 0.7875 | Test 0.7820
+  Epoch 15/25 | Loss 0.8110 | Val 0.7850 | Test 0.7790
+  Epoch 16/25 | Loss 0.7684 | Val 0.7863 | Test 0.7900
+  Epoch 17/25 | Loss 0.7553 | Val 0.8013 | Test 0.7910
+  Epoch 18/25 | Loss 0.7406 | Val 0.8075 | Test 0.7980
+  Epoch 19/25 | Loss 0.7240 | Val 0.8050 | Test 0.8050
+  Epoch 20/25 | Loss 0.7172 | Val 0.7987 | Test 0.8080
+  Epoch 21/25 | Loss 0.6972 | Val 0.8125 | Test 0.8120
+  Epoch 22/25 | Loss 0.6865 | Val 0.8137 | Test 0.8080
+  Epoch 23/25 | Loss 0.6781 | Val 0.8163 | Test 0.8140
+  Epoch 24/25 | Loss 0.6871 | Val 0.8137 | Test 0.8100
+  Epoch 25/25 | Loss 0.6833 | Val 0.8150 | Test 0.8130
+  → acc=0.814 | MAD=0.286 | jac=0.8807 | E=1141
+
+[39] mnist | FeatureSim | b=1.5
+  [MNIST] Train: 3200 | Val: 800 | Test: 1000
+  [MNIST] Nodos por grafo: ~75 | Features: 3 | Clases: 10
+    Aplicando rewiring FeatureSim budget=1.5...
+  [device] Usando: cpu
+  Epoch 01/25 | Loss 2.2070 | Val 0.1113 | Test 0.1140
+  Epoch 02/25 | Loss 2.0198 | Val 0.1113 | Test 0.1140
+  Epoch 03/25 | Loss 1.7618 | Val 0.2200 | Test 0.2290
+  Epoch 04/25 | Loss 1.5580 | Val 0.4988 | Test 0.5130
+  Epoch 05/25 | Loss 1.4569 | Val 0.5225 | Test 0.5460
+  Epoch 06/25 | Loss 1.3560 | Val 0.5587 | Test 0.5830
+  Epoch 07/25 | Loss 1.2583 | Val 0.5950 | Test 0.6110
+  Epoch 08/25 | Loss 1.2003 | Val 0.6138 | Test 0.6400
+  Epoch 09/25 | Loss 1.1335 | Val 0.6138 | Test 0.6580
+  Epoch 10/25 | Loss 1.0744 | Val 0.6837 | Test 0.6950
+  Epoch 11/25 | Loss 1.0039 | Val 0.6837 | Test 0.6990
+  Epoch 12/25 | Loss 0.9580 | Val 0.7050 | Test 0.7120
+  Epoch 13/25 | Loss 0.9126 | Val 0.7063 | Test 0.7330
+  Epoch 14/25 | Loss 0.8746 | Val 0.7388 | Test 0.7490
+  Epoch 15/25 | Loss 0.8316 | Val 0.7262 | Test 0.7440
+  Epoch 16/25 | Loss 0.8288 | Val 0.7412 | Test 0.7530
+  Epoch 17/25 | Loss 0.7888 | Val 0.7562 | Test 0.7670
+  Epoch 18/25 | Loss 0.7824 | Val 0.7512 | Test 0.7690
+  Epoch 19/25 | Loss 0.7728 | Val 0.7600 | Test 0.7740
+  Epoch 20/25 | Loss 0.7544 | Val 0.7638 | Test 0.7670
+  Epoch 21/25 | Loss 0.7452 | Val 0.7662 | Test 0.7690
+  Epoch 22/25 | Loss 0.7249 | Val 0.7650 | Test 0.7790
+  Epoch 23/25 | Loss 0.7305 | Val 0.7662 | Test 0.7740
+  Epoch 24/25 | Loss 0.7264 | Val 0.7700 | Test 0.7750
+  Epoch 25/25 | Loss 0.7401 | Val 0.7712 | Test 0.7780
+  → acc=0.778 | MAD=0.042 | jac=0.6518 | E=1602
+
+[save] CSV → results/trade_off.csv
+[save] JSON → results/trade_off_full.json
+[viz] Trade-off saved → results/tradeoff_ring.png
+[viz] Pareto saved → results/pareto_ring.png
+[viz] Trade-off saved → results/tradeoff_cora.png
+[viz] Pareto saved → results/pareto_cora.png
+[viz] Trade-off saved → results/tradeoff_mnist.png
+[viz] Pareto saved → results/pareto_mnist.png
+[viz] Summary saved → results/summary.png
+
+======================================================================
+FINAL SUMMARY  (best accuracy per dataset × strategy)
+======================================================================
+strategy  Baseline  FeatureSim  K-hop  Random
+dataset                                      
+cora         0.832       0.818  0.815   0.834
+mnist        0.797       0.814  0.852   0.834
+ring         0.147       0.827  1.000   0.920
