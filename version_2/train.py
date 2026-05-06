@@ -20,6 +20,8 @@ from torch_geometric.loader import DataLoader
 # ---------------------------------------------------------------------------
 
 def get_device() -> torch.device:
+    return torch.device('cpu')
+
     """Prioridad: CUDA → MPS (Apple Silicon) → CPU."""
     if torch.cuda.is_available():
         dev = torch.device('cuda')
