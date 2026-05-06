@@ -22,8 +22,10 @@ import argparse
 import json
 import os
 import torch
+import torch.nn.functional as F
 import numpy as np
 import pandas as pd
+from torch_geometric.data import Data as PyGData
 
 from datasets import make_ring_transfer, load_cora
 from models import GAT
@@ -35,23 +37,56 @@ from metrics import (
     compute_fidelity,
     explanation_sparsity,
 )
-from main import (
-    RING_CONFIG, GAT_RING, TRAIN_RING,
-    GAT_CORA, TRAIN_CORA,
-    _subsample_data_for_metrics,
-)
 from signal_rewiring import jacobian_guided_rewiring, attention_guided_rewiring
 from visualize import plot_tradeoff_curves, plot_pareto_frontier
 
 
 # ---------------------------------------------------------------------------
-# Constants
+# Hyperparameters — exact copies from main.py so the baseline is identical
 # ---------------------------------------------------------------------------
+
+RING_CONFIG = dict(num_nodes=20, num_classes=5, num_graphs=500)
+GAT_RING    = dict(hidden=32, heads=4, num_layers=3, dropout=0.5)
+TRAIN_RING  = dict(epochs=200, lr=0.005, weight_decay=5e-4)
+
+GAT_CORA   = dict(hidden=16, heads=8, num_layers=2, dropout=0.6)
+TRAIN_CORA = dict(epochs=200, lr=0.005, weight_decay=5e-4)
 
 BUDGETS           = [0.25, 0.75, 1.5]
 SIGNAL_STRATEGIES = ["JacobianGuided", "AttentionGuided"]
 CSV_PATH          = "results/trade_off.csv"
 JSON_PATH         = "results/trade_off_full.json"
+
+
+# ---------------------------------------------------------------------------
+# Helper — copied from main.py so we don't import the whole module
+# ---------------------------------------------------------------------------
+
+def _subsample_data_for_metrics(data, max_nodes: int = 200, seed: int = 0):
+    """
+    Para grafos grandes (Cora): toma una submuestra inducida de ~max_nodes nodos.
+    Devuelve un Data más pequeño donde podemos calcular distancias y Jacobian.
+    """
+    if data.num_nodes <= max_nodes:
+        return data
+    g = torch.Generator().manual_seed(seed)
+    idx = torch.randperm(data.num_nodes, generator=g)[:max_nodes]
+    idx_set = set(idx.tolist())
+    remap = {old: new for new, old in enumerate(idx.tolist())}
+    src = data.edge_index[0].tolist()
+    dst = data.edge_index[1].tolist()
+    new_src, new_dst = [], []
+    for s, d in zip(src, dst):
+        if s in idx_set and d in idx_set:
+            new_src.append(remap[s])
+            new_dst.append(remap[d])
+    if len(new_src) == 0:
+        return None
+    return PyGData(
+        x=data.x[idx],
+        edge_index=torch.tensor([new_src, new_dst], dtype=torch.long),
+        y=data.y[idx],
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -81,17 +116,19 @@ def run_signal_ring_one(strategy: str, budget: float, verbose: bool = False) -> 
     """RingTransfer two-phase run: baseline → signal rewiring → retrain."""
     raw_graphs = make_ring_transfer(**RING_CONFIG)
 
-    # Phase A: train baseline on original graphs
+    # Phase A: train baseline with the exact same setup as main.py's run_ring_one
     print("  [Phase A] Training baseline on original ring graphs...")
     res_base = train_graph_list(
-        GAT, raw_graphs, model_kwargs=GAT_RING,
-        verbose=verbose, **TRAIN_RING,
+        GAT, raw_graphs,
+        model_kwargs=GAT_RING,
+        verbose=verbose,
+        **TRAIN_RING,
     )
     base_model = res_base['model'].cpu().eval()
     print(f"  [Phase A] Baseline test_acc={res_base['test_acc']:.4f}")
 
     # Apply signal rewiring to each graph individually
-    print(f"  Applying {strategy} rewiring to {len(raw_graphs)} graphs...")
+    print(f"  Applying {strategy} rewiring (budget={budget}) to {len(raw_graphs)} graphs...")
     rewired = []
     for i, g in enumerate(raw_graphs):
         rewired.append(_apply_signal(
@@ -99,15 +136,17 @@ def run_signal_ring_one(strategy: str, budget: float, verbose: bool = False) -> 
             graph_level=False, seed=i,
         ))
 
-    # Phase B: retrain from scratch on rewired graphs
+    # Phase B: retrain from scratch — same model class and kwargs as Phase A
     print("  [Phase B] Retraining from scratch on rewired graphs...")
     res = train_graph_list(
-        GAT, rewired, model_kwargs=GAT_RING,
-        verbose=verbose, **TRAIN_RING,
+        GAT, rewired,
+        model_kwargs=GAT_RING,
+        verbose=verbose,
+        **TRAIN_RING,
     )
     model = res['model'].cpu().eval()
 
-    # Metrics (same as run_ring_one in main.py)
+    # Metrics — same code as run_ring_one in main.py
     test_graphs = [g for g in rewired if g.test_mask.any()]
     sample      = (test_graphs[0] if test_graphs else rewired[0]).cpu()
 
@@ -138,11 +177,11 @@ def run_signal_ring_one(strategy: str, budget: float, verbose: bool = False) -> 
 
 def run_signal_cora_one(strategy: str, budget: float, verbose: bool = False) -> dict:
     """Cora two-phase run: baseline → signal rewiring → retrain."""
-    data  = load_cora()
+    data   = load_cora()
     in_ch  = data.x.shape[1]
     out_ch = int(data.y.max().item()) + 1
 
-    # Phase A: train baseline on original Cora
+    # Phase A: train baseline with the exact same setup as main.py's run_cora_one
     print("  [Phase A] Training baseline on original Cora...")
     base_model_inst = GAT(in_channels=in_ch, out_channels=out_ch, **GAT_CORA)
     res_base = train_single_graph(
@@ -152,20 +191,20 @@ def run_signal_cora_one(strategy: str, budget: float, verbose: bool = False) -> 
     print(f"  [Phase A] Baseline test_acc={res_base['test_acc']:.4f}")
 
     # Apply signal rewiring
-    print(f"  Applying {strategy} rewiring to Cora...")
+    print(f"  Applying {strategy} rewiring (budget={budget}) to Cora...")
     rewired = _apply_signal(
         strategy, base_model, data.cpu(), budget,
         graph_level=False, seed=0,
     )
 
-    # Phase B: retrain from scratch
+    # Phase B: fresh GAT — same constructor and kwargs as Phase A
     print("  [Phase B] Retraining from scratch on rewired Cora...")
     fresh_model = GAT(in_channels=in_ch, out_channels=out_ch, **GAT_CORA)
     res = train_single_graph(fresh_model, rewired, verbose=verbose, **TRAIN_CORA)
     model       = res['model'].cpu().eval()
     rewired_cpu = rewired.cpu()
 
-    # Metrics (same as run_cora_one in main.py)
+    # Metrics — same code as run_cora_one in main.py
     sub      = _subsample_data_for_metrics(rewired_cpu, max_nodes=200, seed=0)
     jbd      = jacobian_norm_by_distance(model, sub) if sub is not None else {}
     jac_mean = float(np.mean(list(jbd.values()))) if jbd else 0.0
@@ -250,7 +289,7 @@ def run_signal_sweep(datasets: list, strategies: list, budgets: list,
 
 def append_to_csv(new_df: pd.DataFrame, csv_path: str):
     """Append new rows to the shared CSV (creates it if it doesn't exist)."""
-    os.makedirs(os.path.dirname(csv_path) or "results", exist_ok=True)
+    os.makedirs("results", exist_ok=True)
     df_to_save = new_df.drop(columns=['jacobian_by_dist'], errors='ignore')
     if os.path.exists(csv_path):
         existing = pd.read_csv(csv_path)
@@ -287,7 +326,7 @@ def _update_json(new_df: pd.DataFrame, json_path: str):
 # ---------------------------------------------------------------------------
 
 def generate_plots(csv_path: str, datasets: list):
-    """Reload the full CSV and regenerate plots including signal strategies."""
+    """Reload full CSV and regenerate plots including signal strategies."""
     if not os.path.exists(csv_path):
         return
     df = pd.read_csv(csv_path)
