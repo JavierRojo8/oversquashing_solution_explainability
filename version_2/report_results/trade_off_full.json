@@ -1,0 +1,919 @@
+[
+  {
+    "test_acc": 0.14666666666666667,
+    "mad": 0.18844938278198242,
+    "dirichlet": 0.11416952311992645,
+    "jacobian_mean": 0.036215194314718244,
+    "jacobian_by_dist": {
+      "1": 0.2171190232038498,
+      "2": 0.10858643054962158,
+      "3": 0.03644648939371109,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0,
+      "9": 0.0,
+      "10": 0.0
+    },
+    "fidelity_plus": -0.04929918050765991,
+    "sparsity": 0.875,
+    "num_nodes": 20,
+    "num_edges": 20,
+    "dataset": "ring",
+    "strategy": "Baseline",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.14666666666666667,
+    "mad": 0.18844938278198242,
+    "dirichlet": 0.11416952311992645,
+    "jacobian_mean": 0.036215194314718244,
+    "jacobian_by_dist": {
+      "1": 0.2171190232038498,
+      "2": 0.10858643054962158,
+      "3": 0.03644648939371109,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0,
+      "9": 0.0,
+      "10": 0.0
+    },
+    "fidelity_plus": -0.04929918050765991,
+    "sparsity": 0.875,
+    "num_nodes": 20,
+    "num_edges": 20,
+    "dataset": "ring",
+    "strategy": "Random",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.21333333333333335,
+    "mad": 0.3407149910926819,
+    "dirichlet": 0.8554571270942688,
+    "jacobian_mean": 0.055265611835888455,
+    "jacobian_by_dist": {
+      "1": 0.23693811893463135,
+      "2": 0.1075136810541153,
+      "3": 0.042407482862472534,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0
+    },
+    "fidelity_plus": -0.005562394857406616,
+    "sparsity": 0.8600000143051147,
+    "num_nodes": 20,
+    "num_edges": 25,
+    "dataset": "ring",
+    "strategy": "Random",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 0.76,
+    "mad": 0.49837958812713623,
+    "dirichlet": 4.926839828491211,
+    "jacobian_mean": 0.40512730479240416,
+    "jacobian_by_dist": {
+      "1": 1.2139297723770142,
+      "2": 0.5565853714942932,
+      "3": 0.2551213800907135,
+      "4": 0.0,
+      "5": 0.0
+    },
+    "fidelity_plus": -0.15029799938201904,
+    "sparsity": 0.7142857313156128,
+    "num_nodes": 20,
+    "num_edges": 35,
+    "dataset": "ring",
+    "strategy": "Random",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.92,
+    "mad": 0.2251487672328949,
+    "dirichlet": 2.907442331314087,
+    "jacobian_mean": 0.566627045472463,
+    "jacobian_by_dist": {
+      "1": 0.8786945939064026,
+      "2": 0.5473271608352661,
+      "3": 0.2738593816757202
+    },
+    "fidelity_plus": 0.20470136404037476,
+    "sparsity": 0.8100000023841858,
+    "num_nodes": 20,
+    "num_edges": 50,
+    "dataset": "ring",
+    "strategy": "Random",
+    "budget": 1.5
+  },
+  {
+    "test_acc": 0.14666666666666667,
+    "mad": 0.18844938278198242,
+    "dirichlet": 0.11416952311992645,
+    "jacobian_mean": 0.036215194314718244,
+    "jacobian_by_dist": {
+      "1": 0.2171190232038498,
+      "2": 0.10858643054962158,
+      "3": 0.03644648939371109,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0,
+      "9": 0.0,
+      "10": 0.0
+    },
+    "fidelity_plus": -0.04929918050765991,
+    "sparsity": 0.875,
+    "num_nodes": 20,
+    "num_edges": 20,
+    "dataset": "ring",
+    "strategy": "K-hop",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.72,
+    "mad": 0.30914902687072754,
+    "dirichlet": 5.026604175567627,
+    "jacobian_mean": 1.0759560108184814,
+    "jacobian_by_dist": {
+      "1": 3.2942588329315186,
+      "2": 1.4824434518814087,
+      "3": 0.60307776927948,
+      "4": 0.0,
+      "5": 0.0
+    },
+    "fidelity_plus": 0.2601855993270874,
+    "sparsity": 0.800000011920929,
+    "num_nodes": 20,
+    "num_edges": 25,
+    "dataset": "ring",
+    "strategy": "K-hop",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 1.0,
+    "mad": 0.26736533641815186,
+    "dirichlet": 1.5502432584762573,
+    "jacobian_mean": 0.12271452397108078,
+    "jacobian_by_dist": {
+      "1": 0.3625639081001282,
+      "2": 0.1914079189300537,
+      "3": 0.059600792825222015,
+      "4": 0.0,
+      "5": 0.0
+    },
+    "fidelity_plus": 0.312515027821064,
+    "sparsity": 0.7857142686843872,
+    "num_nodes": 20,
+    "num_edges": 35,
+    "dataset": "ring",
+    "strategy": "K-hop",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.9866666666666667,
+    "mad": 0.18775802850723267,
+    "dirichlet": 2.4881162643432617,
+    "jacobian_mean": 1.439266276359558,
+    "jacobian_by_dist": {
+      "1": 4.146265029907227,
+      "2": 2.1729676723480225,
+      "3": 0.8770986795425415,
+      "4": 0.0,
+      "5": 0.0
+    },
+    "fidelity_plus": 0.47121288627386093,
+    "sparsity": 0.7699999809265137,
+    "num_nodes": 20,
+    "num_edges": 50,
+    "dataset": "ring",
+    "strategy": "K-hop",
+    "budget": 1.5
+  },
+  {
+    "test_acc": 0.14666666666666667,
+    "mad": 0.18844938278198242,
+    "dirichlet": 0.11416952311992645,
+    "jacobian_mean": 0.036215194314718244,
+    "jacobian_by_dist": {
+      "1": 0.2171190232038498,
+      "2": 0.10858643054962158,
+      "3": 0.03644648939371109,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0,
+      "9": 0.0,
+      "10": 0.0
+    },
+    "fidelity_plus": -0.04929918050765991,
+    "sparsity": 0.875,
+    "num_nodes": 20,
+    "num_edges": 20,
+    "dataset": "ring",
+    "strategy": "FeatureSim",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.2,
+    "mad": 0.3285582363605499,
+    "dirichlet": 0.20810584723949432,
+    "jacobian_mean": 0.05070161400362849,
+    "jacobian_by_dist": {
+      "1": 0.2532317340373993,
+      "2": 0.1136656105518341,
+      "3": 0.03871556743979454,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0
+    },
+    "fidelity_plus": 0.016077473759651184,
+    "sparsity": 0.9399999976158142,
+    "num_nodes": 20,
+    "num_edges": 25,
+    "dataset": "ring",
+    "strategy": "FeatureSim",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 0.7466666666666667,
+    "mad": 0.3908824324607849,
+    "dirichlet": 1.0955778360366821,
+    "jacobian_mean": 0.42452856004238126,
+    "jacobian_by_dist": {
+      "1": 1.355999231338501,
+      "2": 0.5573676228523254,
+      "3": 0.20927594602108002,
+      "4": 0.0,
+      "5": 0.0
+    },
+    "fidelity_plus": 0.005540639162063599,
+    "sparsity": 0.7714285850524902,
+    "num_nodes": 20,
+    "num_edges": 35,
+    "dataset": "ring",
+    "strategy": "FeatureSim",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.8266666666666667,
+    "mad": 0.33433425426483154,
+    "dirichlet": 2.4589996337890625,
+    "jacobian_mean": 0.5949949100613594,
+    "jacobian_by_dist": {
+      "1": 1.2513660192489624,
+      "2": 0.7045772671699524,
+      "3": 0.4240363538265228,
+      "4": 0.0
+    },
+    "fidelity_plus": -0.02940213680267334,
+    "sparsity": 0.6499999761581421,
+    "num_nodes": 20,
+    "num_edges": 50,
+    "dataset": "ring",
+    "strategy": "FeatureSim",
+    "budget": 1.5
+  },
+  {
+    "test_acc": 0.832,
+    "mad": 0.6687245965003967,
+    "dirichlet": 0.05006565526127815,
+    "jacobian_mean": 7.4690937995910645,
+    "jacobian_by_dist": {
+      "1": 11.046234130859375,
+      "2": 3.891953468322754
+    },
+    "fidelity_plus": -0.022536638379096984,
+    "sparsity": 0.9992421269416809,
+    "num_nodes": 2708,
+    "num_edges": 5278,
+    "dataset": "cora",
+    "strategy": "Baseline",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.834,
+    "mad": 0.6542873382568359,
+    "dirichlet": 0.051056861877441406,
+    "jacobian_mean": 4.783890247344971,
+    "jacobian_by_dist": {
+      "1": 7.188149452209473,
+      "2": 2.3796310424804688
+    },
+    "fidelity_plus": 0.10371990203857422,
+    "sparsity": 0.998427438735962,
+    "num_nodes": 2708,
+    "num_edges": 5278,
+    "dataset": "cora",
+    "strategy": "Random",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.79,
+    "mad": 0.5999187231063843,
+    "dirichlet": 0.07415096461772919,
+    "jacobian_mean": 6.309216856956482,
+    "jacobian_by_dist": {
+      "1": 9.203449249267578,
+      "2": 3.4149844646453857
+    },
+    "fidelity_plus": 0.11703533977270127,
+    "sparsity": 0.9986660599708557,
+    "num_nodes": 2708,
+    "num_edges": 6597,
+    "dataset": "cora",
+    "strategy": "Random",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 0.714,
+    "mad": 0.4651593863964081,
+    "dirichlet": 0.08549075573682785,
+    "jacobian_mean": 2.714255690574646,
+    "jacobian_by_dist": {
+      "1": 7.993659973144531,
+      "2": 2.8633627891540527,
+      "3": 0.0,
+      "4": 0.0
+    },
+    "fidelity_plus": -0.14631284326314925,
+    "sparsity": 0.9984841823577881,
+    "num_nodes": 2708,
+    "num_edges": 9236,
+    "dataset": "cora",
+    "strategy": "Random",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.646,
+    "mad": 0.3921559751033783,
+    "dirichlet": 0.08752094209194183,
+    "jacobian_mean": 2.5950305461883545,
+    "jacobian_by_dist": {
+      "1": 11.857417106628418,
+      "2": 3.712766170501709,
+      "3": 0.0,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0
+    },
+    "fidelity_plus": 0.18283031247556208,
+    "sparsity": 0.9989617347717286,
+    "num_nodes": 2708,
+    "num_edges": 13195,
+    "dataset": "cora",
+    "strategy": "Random",
+    "budget": 1.5
+  },
+  {
+    "test_acc": 0.809,
+    "mad": 0.6010162234306335,
+    "dirichlet": 0.04817163571715355,
+    "jacobian_mean": 4.26289176940918,
+    "jacobian_by_dist": {
+      "1": 6.317023754119873,
+      "2": 2.2087597846984863
+    },
+    "fidelity_plus": -0.01872220039367676,
+    "sparsity": 0.9987684726715088,
+    "num_nodes": 2708,
+    "num_edges": 5278,
+    "dataset": "cora",
+    "strategy": "K-hop",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.815,
+    "mad": 0.6266710162162781,
+    "dirichlet": 0.053401246666908264,
+    "jacobian_mean": 8.392696857452393,
+    "jacobian_by_dist": {
+      "1": 12.5620756149292,
+      "2": 4.223318099975586
+    },
+    "fidelity_plus": 0.07261426746845245,
+    "sparsity": 0.9984386920928955,
+    "num_nodes": 2708,
+    "num_edges": 6597,
+    "dataset": "cora",
+    "strategy": "K-hop",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 0.781,
+    "mad": 0.6228505969047546,
+    "dirichlet": 0.060816921293735504,
+    "jacobian_mean": 6.489077806472778,
+    "jacobian_by_dist": {
+      "1": 9.650147438049316,
+      "2": 3.3280081748962402
+    },
+    "fidelity_plus": 0.04615870714187622,
+    "sparsity": 0.9987873554229736,
+    "num_nodes": 2708,
+    "num_edges": 9236,
+    "dataset": "cora",
+    "strategy": "K-hop",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.745,
+    "mad": 0.585451066493988,
+    "dirichlet": 0.08672109991312027,
+    "jacobian_mean": 2.862733030319214,
+    "jacobian_by_dist": {
+      "1": 10.896492958068848,
+      "2": 3.4171721935272217,
+      "3": 0.0,
+      "4": 0.0,
+      "5": 0.0
+    },
+    "fidelity_plus": 0.10619259476661683,
+    "sparsity": 0.9993558049201965,
+    "num_nodes": 2708,
+    "num_edges": 13195,
+    "dataset": "cora",
+    "strategy": "K-hop",
+    "budget": 1.5
+  },
+  {
+    "test_acc": 0.818,
+    "mad": 0.6641414165496826,
+    "dirichlet": 0.048342857509851456,
+    "jacobian_mean": 3.364574134349823,
+    "jacobian_by_dist": {
+      "1": 5.020847797393799,
+      "2": 1.7083004713058472
+    },
+    "fidelity_plus": 0.10080230832099915,
+    "sparsity": 0.9972148537635803,
+    "num_nodes": 2708,
+    "num_edges": 5278,
+    "dataset": "cora",
+    "strategy": "FeatureSim",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.796,
+    "mad": 0.5823342800140381,
+    "dirichlet": 0.09102024883031845,
+    "jacobian_mean": 1.8512179374694824,
+    "jacobian_by_dist": {
+      "1": 7.018125534057617,
+      "2": 2.237964153289795,
+      "3": 0.0,
+      "4": 0.0,
+      "5": 0.0
+    },
+    "fidelity_plus": -0.05251412391662598,
+    "sparsity": 0.9968470573425293,
+    "num_nodes": 2708,
+    "num_edges": 6597,
+    "dataset": "cora",
+    "strategy": "FeatureSim",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 0.774,
+    "mad": 0.5710204839706421,
+    "dirichlet": 0.13620930910110474,
+    "jacobian_mean": 2.545495957136154,
+    "jacobian_by_dist": {
+      "1": 17.097639083862305,
+      "2": 3.2663285732269287,
+      "3": 0.0,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0
+    },
+    "fidelity_plus": 0.42886467799544337,
+    "sparsity": 0.9983542561531067,
+    "num_nodes": 2708,
+    "num_edges": 9236,
+    "dataset": "cora",
+    "strategy": "FeatureSim",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.741,
+    "mad": 0.5165713429450989,
+    "dirichlet": 0.15733762085437775,
+    "jacobian_mean": 0.5906745418906212,
+    "jacobian_by_dist": {
+      "1": 7.908393383026123,
+      "2": 1.542399287223816,
+      "3": 0.0,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0,
+      "9": 0.0,
+      "10": 0.0,
+      "11": 0.0,
+      "12": 0.0,
+      "13": 0.0,
+      "14": 0.0,
+      "15": 0.0,
+      "16": 0.0
+    },
+    "fidelity_plus": 0.23183014541864394,
+    "sparsity": 0.9988177180290222,
+    "num_nodes": 2708,
+    "num_edges": 13195,
+    "dataset": "cora",
+    "strategy": "FeatureSim",
+    "budget": 1.5
+  },
+  {
+    "test_acc": 0.797,
+    "mad": 0.20678789913654327,
+    "dirichlet": 7.8867363929748535,
+    "jacobian_mean": 0.589729368686676,
+    "jacobian_by_dist": {
+      "-1": 0.589729368686676
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 722,
+    "dataset": "mnist",
+    "strategy": "Baseline",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.834,
+    "mad": 0.35311150550842285,
+    "dirichlet": 9.988529205322266,
+    "jacobian_mean": 1.0342475175857544,
+    "jacobian_by_dist": {
+      "-1": 1.0342475175857544
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 670,
+    "dataset": "mnist",
+    "strategy": "Random",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.726,
+    "mad": 0.10654508322477341,
+    "dirichlet": 2.8144032955169678,
+    "jacobian_mean": 0.8337206840515137,
+    "jacobian_by_dist": {
+      "-1": 0.8337206840515137
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 843,
+    "dataset": "mnist",
+    "strategy": "Random",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 0.727,
+    "mad": 0.0010745135368779302,
+    "dirichlet": 0.11027807742357254,
+    "jacobian_mean": 0.846937894821167,
+    "jacobian_by_dist": {
+      "-1": 0.846937894821167
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 1368,
+    "dataset": "mnist",
+    "strategy": "Random",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.701,
+    "mad": 0.0016614082269370556,
+    "dirichlet": 0.040668461471796036,
+    "jacobian_mean": 2.5315048694610596,
+    "jacobian_by_dist": {
+      "-1": 2.5315048694610596
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 1657,
+    "dataset": "mnist",
+    "strategy": "Random",
+    "budget": 1.5
+  },
+  {
+    "test_acc": 0.852,
+    "mad": 0.27215564250946045,
+    "dirichlet": 14.809989929199219,
+    "jacobian_mean": 1.0454621315002441,
+    "jacobian_by_dist": {
+      "-1": 1.0454621315002441
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 726,
+    "dataset": "mnist",
+    "strategy": "K-hop",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.803,
+    "mad": 0.08824096620082855,
+    "dirichlet": 6.5904154777526855,
+    "jacobian_mean": 1.6624178886413574,
+    "jacobian_by_dist": {
+      "-1": 1.6624178886413574
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 815,
+    "dataset": "mnist",
+    "strategy": "K-hop",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 0.782,
+    "mad": 0.0057755643501877785,
+    "dirichlet": 0.5147724151611328,
+    "jacobian_mean": 1.350989818572998,
+    "jacobian_by_dist": {
+      "-1": 1.350989818572998
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 1234,
+    "dataset": "mnist",
+    "strategy": "K-hop",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.798,
+    "mad": 0.002353681018576026,
+    "dirichlet": 0.5161100625991821,
+    "jacobian_mean": 0.6825269460678101,
+    "jacobian_by_dist": {
+      "-1": 0.6825269460678101
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 1605,
+    "dataset": "mnist",
+    "strategy": "K-hop",
+    "budget": 1.5
+  },
+  {
+    "test_acc": 0.81,
+    "mad": 0.3758504390716553,
+    "dirichlet": 11.5140380859375,
+    "jacobian_mean": 0.6130036115646362,
+    "jacobian_by_dist": {
+      "-1": 0.6130036115646362
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 682,
+    "dataset": "mnist",
+    "strategy": "FeatureSim",
+    "budget": 0.0
+  },
+  {
+    "test_acc": 0.749,
+    "mad": 0.35911357402801514,
+    "dirichlet": 13.131027221679688,
+    "jacobian_mean": 0.9021148681640625,
+    "jacobian_by_dist": {
+      "-1": 0.9021148681640625
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 825,
+    "dataset": "mnist",
+    "strategy": "FeatureSim",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 0.814,
+    "mad": 0.28649038076400757,
+    "dirichlet": 14.746724128723145,
+    "jacobian_mean": 0.8806872367858887,
+    "jacobian_by_dist": {
+      "-1": 0.8806872367858887
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 1141,
+    "dataset": "mnist",
+    "strategy": "FeatureSim",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.778,
+    "mad": 0.041681379079818726,
+    "dirichlet": 4.263618469238281,
+    "jacobian_mean": 0.6517963409423828,
+    "jacobian_by_dist": {
+      "-1": 0.6517963409423828
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 1602,
+    "dataset": "mnist",
+    "strategy": "FeatureSim",
+    "budget": 1.5
+  },
+  {
+    "test_acc": 0.14666666666666667,
+    "mad": 0.18844938278198242,
+    "dirichlet": 0.11416952311992645,
+    "jacobian_mean": 0.036215194314718244,
+    "jacobian_by_dist": {
+      "1": 0.2171190232038498,
+      "2": 0.10858643054962158,
+      "3": 0.03644648939371109,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0,
+      "9": 0.0,
+      "10": 0.0
+    },
+    "fidelity_plus": -0.04929918050765991,
+    "sparsity": 0.875,
+    "num_nodes": 20,
+    "num_edges": 20,
+    "dataset": "ring",
+    "strategy": "Baseline",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 0.14666666666666667,
+    "mad": 0.18844938278198242,
+    "dirichlet": 0.11416952311992645,
+    "jacobian_mean": 0.036215194314718244,
+    "jacobian_by_dist": {
+      "1": 0.2171190232038498,
+      "2": 0.10858643054962158,
+      "3": 0.03644648939371109,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0,
+      "9": 0.0,
+      "10": 0.0
+    },
+    "fidelity_plus": -0.04929918050765991,
+    "sparsity": 0.875,
+    "num_nodes": 20,
+    "num_edges": 20,
+    "dataset": "ring",
+    "strategy": "Baseline",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.14666666666666667,
+    "mad": 0.18844938278198242,
+    "dirichlet": 0.11416952311992645,
+    "jacobian_mean": 0.036215194314718244,
+    "jacobian_by_dist": {
+      "1": 0.2171190232038498,
+      "2": 0.10858643054962158,
+      "3": 0.03644648939371109,
+      "4": 0.0,
+      "5": 0.0,
+      "6": 0.0,
+      "7": 0.0,
+      "8": 0.0,
+      "9": 0.0,
+      "10": 0.0
+    },
+    "fidelity_plus": -0.04929918050765991,
+    "sparsity": 0.875,
+    "num_nodes": 20,
+    "num_edges": 20,
+    "dataset": "ring",
+    "strategy": "Baseline",
+    "budget": 1.5
+  },
+  {
+    "test_acc": 0.832,
+    "mad": 0.6687245965003967,
+    "dirichlet": 0.05006565526127815,
+    "jacobian_mean": 7.4690937995910645,
+    "jacobian_by_dist": {
+      "1": 11.046234130859375,
+      "2": 3.891953468322754
+    },
+    "fidelity_plus": -0.022536638379096984,
+    "sparsity": 0.9992421269416809,
+    "num_nodes": 2708,
+    "num_edges": 5278,
+    "dataset": "cora",
+    "strategy": "Baseline",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 0.832,
+    "mad": 0.6687245965003967,
+    "dirichlet": 0.05006565526127815,
+    "jacobian_mean": 7.4690937995910645,
+    "jacobian_by_dist": {
+      "1": 11.046234130859375,
+      "2": 3.891953468322754
+    },
+    "fidelity_plus": -0.022536638379096984,
+    "sparsity": 0.9992421269416809,
+    "num_nodes": 2708,
+    "num_edges": 5278,
+    "dataset": "cora",
+    "strategy": "Baseline",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.832,
+    "mad": 0.6687245965003967,
+    "dirichlet": 0.05006565526127815,
+    "jacobian_mean": 7.4690937995910645,
+    "jacobian_by_dist": {
+      "1": 11.046234130859375,
+      "2": 3.891953468322754
+    },
+    "fidelity_plus": -0.022536638379096984,
+    "sparsity": 0.9992421269416809,
+    "num_nodes": 2708,
+    "num_edges": 5278,
+    "dataset": "cora",
+    "strategy": "Baseline",
+    "budget": 1.5
+  },
+  {
+    "test_acc": 0.797,
+    "mad": 0.20678789913654327,
+    "dirichlet": 7.8867363929748535,
+    "jacobian_mean": 0.589729368686676,
+    "jacobian_by_dist": {
+      "-1": 0.589729368686676
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 722,
+    "dataset": "mnist",
+    "strategy": "Baseline",
+    "budget": 0.25
+  },
+  {
+    "test_acc": 0.797,
+    "mad": 0.20678789913654327,
+    "dirichlet": 7.8867363929748535,
+    "jacobian_mean": 0.589729368686676,
+    "jacobian_by_dist": {
+      "-1": 0.589729368686676
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 722,
+    "dataset": "mnist",
+    "strategy": "Baseline",
+    "budget": 0.75
+  },
+  {
+    "test_acc": 0.797,
+    "mad": 0.20678789913654327,
+    "dirichlet": 7.8867363929748535,
+    "jacobian_mean": 0.589729368686676,
+    "jacobian_by_dist": {
+      "-1": 0.589729368686676
+    },
+    "fidelity_plus": 0.0,
+    "sparsity": 0.0,
+    "num_nodes": 75,
+    "num_edges": 722,
+    "dataset": "mnist",
+    "strategy": "Baseline",
+    "budget": 1.5
+  }
+]
